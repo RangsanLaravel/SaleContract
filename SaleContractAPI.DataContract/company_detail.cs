@@ -19,6 +19,7 @@ namespace SaleContractAPI.DataContract
         public string Priority { get; set; }
         public string DealCreate { get; set; }
         public string DealDateFollowup { get; set; }
+        public string DealDateNoti { get; set; }
         public string DealValue { get; set; }
         public string Won { get; set; }
         public string LastUpdate { get; set; }
