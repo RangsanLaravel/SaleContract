@@ -1,0 +1,50 @@
+[
+  {
+    "outputFileName": "wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap/dist/css/bootstrap.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jquery/dist/jquery.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery/dist/jquery.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/bootstrap/dist/css/dataTables.bootstrap5.min.css",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap/dist/css/dataTables.bootstrap5.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/bootstrap/dist/css/responsive.bootstrap5.min.css",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap/dist/css/responsive.bootstrap5.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/dataTables.bootstrap5.min.js",
+    "inputFiles": [
+      "wwwroot/js/dataTables.bootstrap5.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/dataTables.responsive.min.js",
+    "inputFiles": [
+      "wwwroot/js/dataTables.responsive.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/jquery.dataTables.min.js",
+    "inputFiles": [
+      "wwwroot/js/jquery.dataTables.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/responsive.bootstrap5.min.js",
+    "inputFiles": [
+      "wwwroot/js/responsive.bootstrap5.js"
+    ]
+  }
+]
