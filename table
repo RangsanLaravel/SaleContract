@@ -1,0 +1,38 @@
+-tbt_company_detail-
+ID	bigint	Unchecked
+NAME	nvarchar(MAX)	Checked
+WEBSITE	nvarchar(MAX)	Checked
+Contract	nvarchar(MAX)	Checked
+Position	nvarchar(MAX)	Checked
+Email	nvarchar(MAX)	Checked
+Mobile	nvarchar(MAX)	Checked
+Owner	nvarchar(MAX)	Checked
+ModelType	nvarchar(MAX)	Checked
+People	nvarchar(MAX)	Checked
+Status	nvarchar(MAX)	Checked
+Priority	bigint	Checked
+DealCreate	datetime	Checked
+DealDateFollowup	datetime	Checked
+DealDateNoti	datetime	Checked
+DealValue	nvarchar(MAX)	Checked
+Won	datetime	Checked
+LastUpdate	datetime	Unchecked
+tmn_flg	nchar(1)	Checked
+tmn_dt	datetime	Checked
+----------------------------
+-tbt_sale_status-
+ID	bigint	Unchecked
+company_id	bigint	Checked
+status_code	nvarchar(MAX)	Checked
+fsystem_id	nvarchar(MAX)	Checked
+fsystem_dt	datetime	Checked
+tmn_flg	nchar(1)	Checked
+tmn_dt	datetime	Checked
+----------------------------
+SELECT TOP (1000) [id]
+      ,[STATUS_CODE]
+      ,[STATUS_DESCRIPTION]
+      ,[STATUS_SEQ]
+      ,[ACTIVE_FLG]
+      ,[STATUS_TYPE]
+  FROM [ISEE_DEV3].[dbo].[tbm_substatus]
