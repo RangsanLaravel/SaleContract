@@ -6,6 +6,7 @@ namespace SaleContractAPI.DataContract
 {
     public class company_detail
     {
+        public string ID { get; set; }
         public string NAME { get; set; }
         public string WEBSITE { get; set; }
         public string Contract { get; set; }
@@ -17,11 +18,12 @@ namespace SaleContractAPI.DataContract
         public string People { get; set; }
         public string Status { get; set; }
         public string Priority { get; set; }
-        public string DealCreate { get; set; }
-        public string DealDateFollowup { get; set; }
-        public string DealDateNoti { get; set; }
+        public string Priority_description { get; set; }
+        public DateTime? DealCreate { get; set; }
+        public DateTime? DealDateFollowup { get; set; }
+        public DateTime? DealDateNoti { get; set; }
         public string DealValue { get; set; }
         public string Won { get; set; }
-        public string LastUpdate { get; set; }
+        public DateTime? LastUpdate { get; set; }
     }
 }

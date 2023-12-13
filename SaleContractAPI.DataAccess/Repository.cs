@@ -1,5 +1,5 @@
 ﻿using System.Data.SqlClient;
-using Microsoft.IdentityModel.Tokens;
+//using Microsoft.IdentityModel.Tokens;
 using SaleContractAPI.DataContract;
 using System;
 using System.Collections.Generic;
@@ -45,32 +45,31 @@ namespace SaleContractAPI.DataAccess
             this.transaction.Rollback();
         #endregion " STATIC "
 
-        public async ValueTask<List<substatus>> GET_STATUS(string fname)
+        #region " GET "
+        public async ValueTask<List<substatus>> GET_STATUS(string status_type)
         {
             SqlCommand sql = new SqlCommand
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = $@"SELECT cus.customer_id,
-		cus.cust_type,
-		cus.address,
-		(select td.district_name_tha from [{DBENV}].dbo.tbm_district  td where cus.district_code =td.district_code and td.status =1) as district_name_tha,
-		(select std.sub_district_name_tha from [{DBENV}].dbo.tbm_sub_district std where std.sub_district_code = cus.sub_district_no and std.status=1) as sub_district_name_tha,
-	    (select pr.province_name_tha from [{DBENV}].dbo.tbm_province pr where  pr.province_code =cus.province_code and pr.status =1) as province_name_tha,
-		cus.zip_code,
-		cus.phone_no,
-		cus.Email,cus.fname
-        FROM [{DBENV}].[dbo].[tbm_customer] cus
-        WHERE fname LIKE @fname
-              AND cus.status =1 "
+                CommandText = $@"SELECT [id]
+      ,[STATUS_CODE]
+      ,[STATUS_DESCRIPTION]
+      ,[STATUS_SEQ]
+      ,[ACTIVE_FLG]
+      ,[STATUS_TYPE]
+  FROM [{DBENV}].dbo.[tbm_substatus]
+  WHERE ACTIVE_FLG =1
+  AND STATUS_TYPE = @STATUS_TYPE
+  ORDER BY STATUS_SEQ ASC"
             };
-            sql.Parameters.AddWithValue("@fname", $"%{fname}%");
+            sql.Parameters.AddWithValue("@STATUS_TYPE", status_type);
 
-            using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(sql))
+            using (DataTable dt = await Utility.FillDataTableAsync(sql))
             {
                 if (dt.Rows.Count > 0)
                 {
-                    return dt.AsEnumerable<Customer>().ToList();
+                    return dt.AsEnumerable<substatus>().ToList();
                 }
                 else
                 {
@@ -86,18 +85,55 @@ namespace SaleContractAPI.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = $@"select * from [{DBENV}].dbo.tbt_application_role rl
-                    INNER JOIN [{DBENV}].dbo.tbm_application_center ap ON ap.application_id =rl.application_id and ap.application_status=1
-                    WHERE rl.active_flg =1
-                    AND  rl.user_id =@username"
+                CommandText = $@"SELECT  [ID]
+                                    ,[Priority_description]
+                                    ,[Priority_SEQ]
+                                    ,[TMN_FLG]
+            FROM [{DBENV}].dbo.[tbm_priority]
+            WHERE TMN_FLG ='N'"
             };
-            command.Parameters.AddWithValue("@username", USERID);
-
-            using (DataTable dt = await Utility.FillDataTableAsync(command))
+            
+            using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(command))
             {
                 if (dt.Rows.Count > 0)
                 {
-                    return dt.AsEnumerable<tbm_application_center>().ToList();
+                    return dt.AsEnumerable<Priority>().ToList();
+                }
+                else
+                    return null;
+            }
+        }
+
+
+        public async ValueTask<List<TBT_SALE_STATUS>> GET_TBT_SALE_STATUS(int company_id)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = $@"SELECT tbtst.ID
+      ,tbtst.company_id
+      ,tbtst.status_code
+	  ,sub.STATUS_DESCRIPTION
+      ,tbtst.fsystem_id
+      ,tbtst.fsystem_dt
+      ,tbtst.tmn_flg
+      ,tbtst.tmn_dt
+      ,tbtst.remark
+  FROM [{DBENV}].dbo.[tbt_sale_status] tbtst
+  INNER JOIN [{DBENV}].dbo.[tbm_substatus] sub on sub.STATUS_CODE= tbtst.STATUS_CODE
+  WHERE tbtst.tmn_flg='N'
+  AND sub.ACTIVE_FLG =1
+  AND sub.STATUS_TYPE='SALE'
+  AND tbtst.company_id =@company_id 
+ORDER BY tbtstใFSYSTEM_DT ASC"
+            };
+            command.Parameters.AddWithValue("@company_id", company_id);
+            using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    return dt.AsEnumerable<TBT_SALE_STATUS>().ToList();
                 }
                 else
                     return null;
@@ -110,38 +146,181 @@ namespace SaleContractAPI.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = $@"select * from [{DBENV}].dbo.tbt_application_role rl
-                    INNER JOIN [{DBENV}].dbo.tbm_application_center ap ON ap.application_id =rl.application_id and ap.application_status=1
-                    WHERE rl.active_flg =1
-                    AND  rl.user_id =@username"
+                CommandText = $@"SELECT [ID]
+      ,[NAME]
+      ,[WEBSITE]
+      ,[Contract]
+      ,[Position]
+      ,[Email]
+      ,[Mobile]
+      ,[Owner]
+      ,[ModelType]
+      ,[People]
+      ,[Status]
+      ,[Priority]
+      ,[DealCreate]
+      ,[DealDateFollowup]
+      ,[DealDateNoti]
+      ,[DealValue]
+      ,[Won]
+      ,[LastUpdate]
+      ,[tmn_flg]
+      ,[tmn_dt]
+	  ,(SELECT Priority_description FROM [{DBENV}].dbo.[tbm_priority] WHERE TMN_FLG ='N' AND ID= cmp.Priority) as Priority_description 
+  FROM [{DBENV}].dbo.[tbt_company_detail] cmp
+  WHERE TMN_FLG ='N'
+  AND (OWNER IS NULL OR Owner =@wner)
+  AND  (ID IS NULL OR ID =@ID)
+  AND (MOBILE IS NULL OR MOBILE =@MOBILE)
+  AND (EMAIL IS NULL OR EMAIL =@EMAIL)
+  AND (Priority IS NULL OR PRIORITY =@Priority)
+  AND (Status IS NULL OR Status =@Status)
+  AND (DealDateFollowup IS NULL OR DealDateFollowup=@DealDateFollowup)"
             };
-            command.Parameters.AddWithValue("@username", USERID);
+            command.Parameters.AddWithValue("@wner", condition.Owner ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@ID", condition.ID ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@MOBILE", condition.MOBILE ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@EMAIL", condition.EMAIL ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@Priority", condition.Priority ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@Status", condition.Status ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@DealDateFollowup", condition.DealDateFollowup ?? (object)DBNull.Value);
 
             using (DataTable dt = await Utility.FillDataTableAsync(command))
             {
                 if (dt.Rows.Count > 0)
                 {
-                    return dt.AsEnumerable<tbm_application_center>().ToList();
+                    return dt.AsEnumerable<company_detail>().ToList();
                 }
                 else
                     return null;
             }
         }
 
-        public async ValueTask GET_SALECONTRACT_STATUS()
-        {
+        #endregion " GET "
 
+        #region " INSERT "
+
+        public async ValueTask INSERT_TBT_COMPANY_DETAIL(company_detail condition)
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"INSERT INTO [{DBENV}].[dbo].[tbt_company_detail]
+           ([NAME]
+           ,[WEBSITE]
+           ,[Contract]
+           ,[Position]
+           ,[Email]
+           ,[Mobile]
+           ,[Owner]
+           ,[ModelType]
+           ,[People]
+           ,[Priority]
+           ,[DealCreate]
+           ,[DealDateFollowup]
+           ,[DealDateNoti]
+           ,[DealValue]
+           ,[Won]
+           ,[LastUpdate]
+           ,[tmn_flg]
+           ,[tmn_dt])
+     VALUES
+           (@NAME
+           ,@WEBSITE
+           ,@Contract
+           ,@Position
+           ,@Email
+           ,@Mobile
+           ,@Owner
+           ,@ModelType
+           ,@People
+           ,@Priority
+           ,GETDATE()
+           ,@DealDateFollowup
+           ,@DealDateNoti
+           ,@DealValue
+           ,@Won
+           ,GETDATE()
+           ,'N'
+           ,NULL)"
+            };
+
+            sql.Parameters.AddWithValue("@NAME", condition.NAME ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@WEBSITE", condition.WEBSITE ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@Contract", condition.Contract ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@Position", condition.Position ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@Email", condition.Email ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@Mobile", condition.Mobile ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@Owner", condition.Owner ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@ModelType", condition.ModelType ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@People", condition.People ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@Priority", condition.Priority ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@DealDateFollowup", condition.DealDateFollowup ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@DealDateNoti", condition.DealDateNoti ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@DealValue", condition.DealValue ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@Won", condition.Won ?? (object)DBNull.Value);
+
+            await sql.ExecuteNonQueryAsync();
         }
 
-        public async ValueTask InsertCompany(company_detail company_Detail)
+        public async ValueTask INSERT_TBT_SALE_STATUS(TBT_SALE_STATUS condition)
         {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"INSERT INTO [{DBENV}].[dbo].[tbt_sale_status]
+           ([company_id]
+           ,[status_code]
+           ,[fsystem_id]
+           ,[fsystem_dt]
+           ,[tmn_flg]
+           ,[tmn_dt]
+           ,[remark])
+     VALUES
+           (@company_id
+           ,@status_code
+           ,@fsystem_id
+           ,GETDATE()
+           ,'N'
+           ,NULL
+           ,@remark)"
+            };
 
+            sql.Parameters.AddWithValue("@company_id", condition.company_id );
+            sql.Parameters.AddWithValue("@status_code", condition.status_code ??(object)DBNull.Value );
+            sql.Parameters.AddWithValue("@fsystem_id", condition.fsystem_id );
+            sql.Parameters.AddWithValue("@remark", condition.remark ?? (object)DBNull.Value);
+
+
+            await sql.ExecuteNonQueryAsync();
         }
 
-        public async ValueTask UPDATE_STATUS_SALE()
-        {
+        #endregion " INSERT "
 
+        #region " UPDATE "
+        public async ValueTask UPDATE_TBT_COMPANY_DETAIL(company_detail condition)
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbt_company_detail]
+SET Priority =@priority
+WHERE ID =@ID "
+            };
+
+            sql.Parameters.AddWithValue("@priority", condition.Priority );
+            sql.Parameters.AddWithValue("@ID", condition.ID );
+
+            await sql.ExecuteNonQueryAsync();
         }
-        
+
+        #endregion " UPDATE "
+
     }
 }
