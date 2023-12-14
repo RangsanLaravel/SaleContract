@@ -5,4 +5,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SaleContractAPI.DataAccess\SaleContractAPI.DataAccess.csproj" />
+    <ProjectReference Include="..\SaleContractAPI.DataContract\SaleContractAPI.DataContract.csproj" />
+  </ItemGroup>
+
 </Project>
