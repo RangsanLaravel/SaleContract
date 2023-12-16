@@ -14,5 +14,6 @@ namespace SaleContractAPI.DataContract
         public string MOBILE { get; set; }
         public string EMAIL { get; set; }
         public string DealDateFollowup { get; set; }
+        public string limit { get; set; }
     }
 }

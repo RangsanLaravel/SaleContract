@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SaleContractAPI.BusinessLogic;
 using SaleContractAPI.DataContract;
 
 namespace SaleContractAPI.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class ManagesController : ControllerBase
@@ -42,6 +43,8 @@ namespace SaleContractAPI.Controllers
             try
             {
                 var result = await this.service.GET_PRIORITY();
+                if (result is null)
+                    return Ok();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -58,6 +61,8 @@ namespace SaleContractAPI.Controllers
             try
             {
                 var result = await this.service.GET_TBT_SALE_STATUS(companyid);
+                if (result is null)
+                    return Ok();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -74,6 +79,8 @@ namespace SaleContractAPI.Controllers
             try
             {
                 var result = await this.service.GET_COMPANY(condition);
+                if (result is null)
+                    return Ok();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -90,6 +97,7 @@ namespace SaleContractAPI.Controllers
             try
             {
                 await this.service.INSERT_TBT_COMPANY_DETAIL(condition);
+                
                 return Ok();
             }
             catch (Exception ex)

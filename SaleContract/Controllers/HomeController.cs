@@ -21,50 +21,54 @@ namespace SaleContract.Controllers
             //    return RedirectToAction("Logout");
             RestClient client = new RestClient(_configuration["API:ISEECENTER"]);
             RestRequest request = new RestRequest($"api/Monitors/GET_DETAIL_ALLJOB", Method.Post);
-            //request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
-            //var isNulldata = searchalljob.fname is null
-            //                && searchalljob.owner_id is null
-            //                && searchalljob.job_id is null
-            //                && searchalljob.job_status_code is null
-            //                ;
-            //if (isNulldata)
-            //{
-            //    searchalljob = new searchalljob
-            //    {
-            //        limit = "50",
-            //        fname = string.Empty,
-            //        owner_id = string.Empty,
-            //        job_id = string.Empty,
-            //        job_status_code = string.Empty
-            //    };
-            //}
-            //else
-            //{
-            //    searchalljob.fname = searchalljob.fname ?? string.Empty;
-            //    searchalljob.job_id = searchalljob.job_id ?? string.Empty;
-            //    searchalljob.owner_id = searchalljob.owner_id ?? string.Empty;
-            //    searchalljob.job_status_code = searchalljob.job_status_code ?? string.Empty;
-            //    searchalljob.limit = searchalljob.limit ?? "100";
-            //}
-            //request.AddBody(searchalljob);
-            //var response = client.Execute<List<crmmonitor>>(request);
-            //ViewBag.Fullname = HttpContext.Session.GetString("fullname");
-            //ViewData["ownerid"] = GET_OWNERID();
-            //ViewData["substatus"] = GET_TBM_SUBSTATUS();
-            //ViewBag.Substatus = HttpContext.Session.GetString("substatus") == null ? null : JsonSerializer.Deserialize<List<tbm_substatus>>(HttpContext.Session.GetString("substatus"));
-            //if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            //{
-            //    return View(response?.Data);
-            //}
-            //else if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+            request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
+            var isNulldata = condition.NAME is null
+                            && condition.MOBILE is null
+                            && condition.Status is null
+                            && condition.EMAIL is null
+                            && condition.Priority is null
+                            ;
+            if (isNulldata)
+            {
+                condition = new SEARCH_COMPANY
+                {
+                    limit = "50",
+                    NAME = string.Empty,
+                    Status = string.Empty,
+                    MOBILE = string.Empty,
+                    EMAIL = string.Empty,
+                    Priority = string.Empty
+                };
+            }
+            else
+            {
+                condition.NAME = condition.NAME ?? string.Empty;
+                condition.Status = condition.Status ?? string.Empty;
+                condition.Priority = condition.Priority ?? string.Empty;
+                condition.MOBILE = condition.MOBILE ?? string.Empty;
+                condition.EMAIL = condition.EMAIL ?? string.Empty;
+                condition.limit = condition.limit ?? "100";
+            }
+            request.AddBody(condition);
+            var response = client.Execute<List<company_detail>>(request);
+            ViewBag.Fullname = HttpContext.Session.GetString("fullname");
+            ViewData["priority"] = GET_PRIORITY();
+            ViewData["substatus"] = GET_STATUS();
+          //  ViewBag.Substatus = HttpContext.Session.GetString("substatus") == null ? null : JsonSerializer.Deserialize<List<substatus>>(HttpContext.Session.GetString("substatus"));
+           // ViewBag.priority = HttpContext.Session.GetString("priority") == null ? null : JsonSerializer.Deserialize<List<Priority>>(HttpContext.Session.GetString("priority"));
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return View(response?.Data);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
                 return View();
             }
-            //else
-            //{
-            //    ViewBag.Error = response.Content;
-            //    return View("Error");
-            //}
+            else
+            {
+                ViewBag.Error = response.Content;
+                return View("Error");
+            }
         }
 
         public IActionResult Link(string token)
@@ -88,6 +92,34 @@ namespace SaleContract.Controllers
                 HttpContext.Session.SetString("fullname", response.Data.fullname);
             }
         }
+
+        protected List<substatus> GET_STATUS()
+        {
+            RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
+            RestRequest request = new RestRequest($"api/v1/Manages/GET_STATUS/SALE", Method.Get);
+            request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
+            var response = client.Execute<List<substatus>>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                HttpContext.Session.SetString("substatus", JsonSerializer.Serialize(response.Data));
+            }
+            return response.Data;
+        }
+
+        protected List<Priority> GET_PRIORITY()
+        {
+            RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
+            RestRequest request = new RestRequest($"api/v1/Manages/GET_PRIORITY", Method.Get);
+            request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
+            var response = client.Execute<List<Priority>>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                HttpContext.Session.SetString("priority", JsonSerializer.Serialize(response.Data));            
+            }
+            return response.Data;
+        }
+
+
         public async ValueTask<IActionResult> Create(company_detail company)
         {
             if (!ModelState.IsValid)
