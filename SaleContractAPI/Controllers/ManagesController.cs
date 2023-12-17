@@ -14,14 +14,15 @@ namespace SaleContractAPI.Controllers
     {
         private readonly IConfiguration Configuration = null;
         private readonly ServiceAction service;
+        //private readonly string _userid;
         public ManagesController(IConfiguration Configuration)
         {
+            
             this.Configuration = Configuration;
             this.service = new ServiceAction(this.Configuration.GetConnectionString("ConnectionSQLServer"), Configuration["ConfigSetting:DBENV"]);
         }
 
         [HttpGet("GET_STATUS/{status_type}")]
-        [AllowAnonymous]
         public async ValueTask<IActionResult> GET_STATUS(string status_type)
         {
             try
@@ -37,7 +38,6 @@ namespace SaleContractAPI.Controllers
         }
 
         [HttpGet("GET_PRIORITY")]
-        [AllowAnonymous]
         public async ValueTask<IActionResult> GET_PRIORITY()
         {
             try
@@ -55,7 +55,6 @@ namespace SaleContractAPI.Controllers
         }
 
         [HttpGet("GET_TBT_SALE_STATUS/{companyid}")]
-        [AllowAnonymous]
         public async ValueTask<IActionResult> GET_TBT_SALE_STATUS(int companyid)
         {
             try
@@ -73,7 +72,6 @@ namespace SaleContractAPI.Controllers
         }
 
         [HttpPost("GET_COMPANY")]
-        [AllowAnonymous]
         public async ValueTask<IActionResult> GET_COMPANY(SEARCH_COMPANY condition)
         {
             try
@@ -91,11 +89,13 @@ namespace SaleContractAPI.Controllers
         }
 
         [HttpPost("INSERT_TBT_COMPANY_DETAIL")]
-        [AllowAnonymous]
+ 
         public async ValueTask<IActionResult> INSERT_TBT_COMPANY_DETAIL(company_detail condition)
         {
             try
             {
+                var _userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                condition.Owner = _userid;
                 await this.service.INSERT_TBT_COMPANY_DETAIL(condition);
                 
                 return Ok();
@@ -106,6 +106,36 @@ namespace SaleContractAPI.Controllers
             }
 
         }
+        [HttpPost("INSERT_TBT_SALE_STATUS")]
+        public async ValueTask<IActionResult> INSERT_TBT_SALE_STATUS(TBT_SALE_STATUS condition)
+        {
+            try
+            {
+                var _userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                condition.fsystem_id = _userid;
+                await this.service.INSERT_TBT_SALE_STATUS(condition);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
+
+        [HttpGet("ACCAPT/{ID}")]
+        public async ValueTask<IActionResult> ACCAPT_NOTIFICATION(string ID)
+        {
+            try
+            {
+
+                await this.service.UPDATE_TBT_SALE_NOTIFICATION(ID);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

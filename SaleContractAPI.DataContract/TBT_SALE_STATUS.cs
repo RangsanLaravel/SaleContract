@@ -15,6 +15,8 @@ namespace SaleContractAPI.DataContract
         public string tmn_flg { get; set; }
         public DateTime? tmn_dt { get; set; }
         public string remark { get; set; }
-        
+        public string priority { get; set; }
+        public string noti_dt { get; set; }
+
     }
 }

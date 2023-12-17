@@ -23,7 +23,7 @@ namespace SaleContractAPI.DataContract
         public DateTime? DealDateFollowup { get; set; }
         public DateTime? DealDateNoti { get; set; }
         public string DealValue { get; set; }
-        public string Won { get; set; }
+        public DateTime? Won { get; set; }
         public DateTime? LastUpdate { get; set; }
     }
 }

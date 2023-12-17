@@ -90,7 +90,8 @@ namespace SaleContractAPI.DataAccess
                                     ,[Priority_SEQ]
                                     ,[TMN_FLG]
             FROM [{DBENV}].dbo.[tbm_priority]
-            WHERE TMN_FLG ='N'"
+            WHERE TMN_FLG ='N'
+ORDER BY Priority_SEQ ASC"
             };
             
             using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(command))
@@ -115,7 +116,7 @@ namespace SaleContractAPI.DataAccess
       ,tbtst.company_id
       ,tbtst.status_code
 	  ,sub.STATUS_DESCRIPTION
-      ,tbtst.fsystem_id
+      ,(select CONCAT(fullname,' ',lastname)  FROM [{DBENV}].[dbo].[tbm_employee] where user_id = tbtst.fsystem_id AND status =1) fsystem_id
       ,tbtst.fsystem_dt
       ,tbtst.tmn_flg
       ,tbtst.tmn_dt
@@ -126,7 +127,7 @@ namespace SaleContractAPI.DataAccess
   AND sub.ACTIVE_FLG =1
   AND sub.STATUS_TYPE='SALE'
   AND tbtst.company_id =@company_id 
-ORDER BY tbtstใFSYSTEM_DT ASC"
+ORDER BY tbtst.FSYSTEM_DT ASC"
             };
             command.Parameters.AddWithValue("@company_id", company_id);
             using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(command))
@@ -146,7 +147,8 @@ ORDER BY tbtstใFSYSTEM_DT ASC"
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = $@"SELECT [ID]
+                CommandText = $@"SELECT {(string.IsNullOrEmpty(condition.limit) ? "" : $"TOP {condition.limit}")}
+            [ID]
       ,[NAME]
       ,[WEBSITE]
       ,[Contract]
@@ -169,21 +171,25 @@ ORDER BY tbtstใFSYSTEM_DT ASC"
 	  ,(SELECT Priority_description FROM [{DBENV}].dbo.[tbm_priority] WHERE TMN_FLG ='N' AND ID= cmp.Priority) as Priority_description 
   FROM [{DBENV}].dbo.[tbt_company_detail] cmp
   WHERE TMN_FLG ='N'
-  AND (OWNER IS NULL OR Owner =@wner)
-  AND  (ID IS NULL OR ID =@ID)
-  AND (MOBILE IS NULL OR MOBILE =@MOBILE)
-  AND (EMAIL IS NULL OR EMAIL =@EMAIL)
-  AND (Priority IS NULL OR PRIORITY =@Priority)
-  AND (Status IS NULL OR Status =@Status)
-  AND (DealDateFollowup IS NULL OR DealDateFollowup=@DealDateFollowup)"
+  AND (@name IS NULL OR NAME like '%{condition.NAME}%')
+  AND (@wner IS NULL OR Owner =@wner)
+  AND  (@ID IS NULL OR ID =@ID)
+  AND (@MOBILE IS NULL OR MOBILE =@MOBILE)
+  AND (@EMAIL IS NULL OR EMAIL =@EMAIL)
+  AND (@Priority IS NULL OR PRIORITY =@Priority)
+  AND (@Status IS NULL OR Status =@Status)
+  AND (@DealDateFollowup IS NULL OR DealDateFollowup=@DealDateFollowup)
+   "
             };
-            command.Parameters.AddWithValue("@wner", condition.Owner ?? (object)DBNull.Value);
-            command.Parameters.AddWithValue("@ID", condition.ID ?? (object)DBNull.Value);
-            command.Parameters.AddWithValue("@MOBILE", condition.MOBILE ?? (object)DBNull.Value);
-            command.Parameters.AddWithValue("@EMAIL", condition.EMAIL ?? (object)DBNull.Value);
-            command.Parameters.AddWithValue("@Priority", condition.Priority ?? (object)DBNull.Value);
-            command.Parameters.AddWithValue("@Status", condition.Status ?? (object)DBNull.Value);
-            command.Parameters.AddWithValue("@DealDateFollowup", condition.DealDateFollowup ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@name", string.IsNullOrWhiteSpace(condition.NAME) ? (object)DBNull.Value : condition.NAME);
+            command.Parameters.AddWithValue("@wner", string.IsNullOrWhiteSpace(condition.Owner) ? (object)DBNull.Value: condition.Owner);
+            command.Parameters.AddWithValue("@ID", string.IsNullOrWhiteSpace(condition.ID)? (object)DBNull.Value:condition.ID);
+            command.Parameters.AddWithValue("@MOBILE", string.IsNullOrWhiteSpace(condition.MOBILE)? (object)DBNull.Value:condition.MOBILE);
+            command.Parameters.AddWithValue("@EMAIL", string.IsNullOrWhiteSpace(condition.EMAIL)? (object)DBNull.Value:condition.EMAIL);
+            command.Parameters.AddWithValue("@Priority", string.IsNullOrWhiteSpace(condition.Priority)? (object)DBNull.Value:condition.Priority);
+            command.Parameters.AddWithValue("@Status", string.IsNullOrWhiteSpace(condition.Status)? (object)DBNull.Value:condition.Status);
+            command.Parameters.AddWithValue("@DealDateFollowup", string.IsNullOrWhiteSpace(condition.DealDateFollowup)? (object)DBNull.Value:condition.DealDateFollowup);
+
 
             using (DataTable dt = await Utility.FillDataTableAsync(command))
             {
@@ -200,7 +206,7 @@ ORDER BY tbtstใFSYSTEM_DT ASC"
 
         #region " INSERT "
 
-        public async ValueTask INSERT_TBT_COMPANY_DETAIL(company_detail condition)
+        public async ValueTask<int> INSERT_TBT_COMPANY_DETAIL(company_detail condition)
         {
             SqlCommand sql = new SqlCommand
             {
@@ -222,10 +228,8 @@ ORDER BY tbtstใFSYSTEM_DT ASC"
            ,[DealDateFollowup]
            ,[DealDateNoti]
            ,[DealValue]
-           ,[Won]
            ,[LastUpdate]
-           ,[tmn_flg]
-           ,[tmn_dt])
+           ,[tmn_flg])
      VALUES
            (@NAME
            ,@WEBSITE
@@ -241,10 +245,8 @@ ORDER BY tbtstใFSYSTEM_DT ASC"
            ,@DealDateFollowup
            ,@DealDateNoti
            ,@DealValue
-           ,@Won
            ,GETDATE()
-           ,'N'
-           ,NULL)"
+           ,'N')"
             };
 
             sql.Parameters.AddWithValue("@NAME", condition.NAME ?? (object)DBNull.Value);
@@ -260,9 +262,11 @@ ORDER BY tbtstใFSYSTEM_DT ASC"
             sql.Parameters.AddWithValue("@DealDateFollowup", condition.DealDateFollowup ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@DealDateNoti", condition.DealDateNoti ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@DealValue", condition.DealValue ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@Won", condition.Won ?? (object)DBNull.Value);
 
-            await sql.ExecuteNonQueryAsync();
+            var insertedId = await sql.ExecuteScalarAsync();
+
+            // แปลงค่าที่รีเทิร์นมาเป็น int (หรือตามประเภทของ ID ของคุณ)
+            return Convert.ToInt32(insertedId);
         }
 
         public async ValueTask INSERT_TBT_SALE_STATUS(TBT_SALE_STATUS condition)
@@ -299,6 +303,30 @@ ORDER BY tbtstใFSYSTEM_DT ASC"
             await sql.ExecuteNonQueryAsync();
         }
 
+        public async ValueTask INSERT_TBT_SALE_NOTIFICATION(tbt_sale_notification condition)
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"INSERT INTO [{DBENV}].[dbo].[tbt_sale_notification]
+           (
+           [company_id]
+           ,[noti_dt]
+           ,[create_dt])
+     VALUES
+           (
+            @companyid
+           ,@noti_dt
+           ,GETDATE()
+          )"
+            };
+
+            sql.Parameters.AddWithValue("@companyid", condition.companyid);
+            sql.Parameters.AddWithValue("@noti_dt", condition.noti_dt);
+            await sql.ExecuteNonQueryAsync();
+        }
         #endregion " INSERT "
 
         #region " UPDATE "
@@ -319,7 +347,55 @@ WHERE ID =@ID "
 
             await sql.ExecuteNonQueryAsync();
         }
+        public async ValueTask UPDATE_TBT_COMPANY_DETAIL_STATUS(string STATUS,string ID)
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbt_company_detail]
+SET STATUS =@Status
+WHERE ID =@ID "
+            };
 
+            sql.Parameters.AddWithValue("@Status", STATUS);
+            sql.Parameters.AddWithValue("@ID", ID);
+
+            await sql.ExecuteNonQueryAsync();
+        }
+        public async ValueTask UPDATE_TBT_COMPANY_DETAIL_WON(string ID)
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbt_company_detail]
+SET WON =GETDATE()
+WHERE ID =@ID "
+            };
+ 
+            sql.Parameters.AddWithValue("@ID", ID);
+
+            await sql.ExecuteNonQueryAsync();
+        }
+
+        public async ValueTask UPDATE_TBT_SALE_NOTIFICATION(string ID)
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbt_sale_notification]
+                                SET accept_dt =GETDATE()
+                                WHERE ID =@ID "
+            };
+            sql.Parameters.AddWithValue("@ID", ID);
+
+            await sql.ExecuteNonQueryAsync();
+        }
         #endregion " UPDATE "
 
     }
