@@ -10,5 +10,6 @@ namespace SaleContractAPI.DataContract
         public string fullname { get; set; }
         public string lastname { get; set; }
         public string position_description { get; set; }
+        public string position { get; set; }
     }
 }

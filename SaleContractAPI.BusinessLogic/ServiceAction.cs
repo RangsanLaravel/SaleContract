@@ -1,4 +1,5 @@
-﻿using SaleContractAPI.DataAccess;
+﻿using Azure.Core.Diagnostics;
+using SaleContractAPI.DataAccess;
 using SaleContractAPI.DataContract;
 using System;
 using System.Collections.Generic;
@@ -72,6 +73,24 @@ namespace SaleContractAPI.BusinessLogic
             try
             {
                 dataObjects = await repository.GET_TBT_SALE_STATUS(company_id);
+                if(dataObjects !=  null)
+                {
+                    foreach (var item in dataObjects)
+                    {
+                        var company =await repository.GET_COMPANY(new SEARCH_COMPANY { ID = company_id.ToString() });
+                        if(company != null)
+                        {
+                            item.due_dt = company.FirstOrDefault().DealDateNoti;
+                        }
+                        var remrk = await GET_REMARK(item.ID.ToString(),repository);
+                        if(remrk != null)
+                        {
+                            item.remark_Statuses = new List<tbt_remark_status>();
+                            item.remark_Statuses = remrk;
+                        }
+                    }
+                }
+                
             }
             catch (Exception ex)
             {
@@ -85,6 +104,21 @@ namespace SaleContractAPI.BusinessLogic
             return dataObjects;
         }
 
+        private async ValueTask<List<tbt_remark_status>> GET_REMARK(string IDSTATUS, Repository repository)
+        {
+            List<tbt_remark_status> remark = new List<tbt_remark_status>();
+            var mainremark = await repository.GET_tbt_remark_status(IDSTATUS);
+            if (mainremark != null)
+            {
+                remark.AddRange(remark);
+                var reply = await repository.GET_tbt_remark_status_UPLINE(mainremark.FirstOrDefault().ID);
+                if (reply != null)
+                    remark.AddRange(reply);
+                return remark;
+            }
+            else
+                return null;
+        }
         public async ValueTask<List<company_detail>> GET_COMPANY(SEARCH_COMPANY condition)
         {
             List<company_detail> dataObjects = null;
@@ -100,6 +134,13 @@ namespace SaleContractAPI.BusinessLogic
                     {
                         item.Status = status.LastOrDefault().status_description;
                     }
+                    if (!string.IsNullOrEmpty(item.DealValue))
+                    {
+
+                        item.Persen =(Convert.ToInt32(item.DealValue)* Convert.ToInt32(string.IsNullOrEmpty(item.Persen)?0:Convert.ToInt32(item.Persen) ) /100).ToString();
+                    }
+                    else
+                        item.Persen = "0";
                 }
             }
             catch (Exception ex)
@@ -143,7 +184,27 @@ namespace SaleContractAPI.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
         }
+        public async ValueTask INSERT_TBT_REAMRK_STATUS(tbt_remark_status condition)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+            try
+            {
+                await repository.INSERT_TBT_REAMRK_STATUS(condition);              
+                await repository.CommitTransection();
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
 
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+        }
         public async ValueTask INSERT_TBT_SALE_STATUS(TBT_SALE_STATUS condition)
         {
             Repository repository = new Repository(_connectionstring, DBENV);
@@ -151,8 +212,18 @@ namespace SaleContractAPI.BusinessLogic
             await repository.beginTransection();
             try
             {
-                await repository.INSERT_TBT_SALE_STATUS(condition);
-                if(condition.status_code == "WON")
+            var idstatus =    await repository.INSERT_TBT_SALE_STATUS(condition);
+                if (string.IsNullOrEmpty(condition.remark))
+                {
+                    tbt_remark_status remrk = new tbt_remark_status
+                    {
+                        ID_STATUS_SALE = idstatus.ToString(),
+                        REMARK_ID =condition.fsystem_id,
+                        REMARK = condition.remark
+                    };
+                    await repository.INSERT_TBT_REAMRK_STATUS(remrk);
+                }
+                if (condition.status_code == "WON")
                 {
                     await repository.UPDATE_TBT_COMPANY_DETAIL_WON(condition.company_id.ToString());
                 }

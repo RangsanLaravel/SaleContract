@@ -122,6 +122,22 @@ namespace SaleContractAPI.Controllers
             }
         }
 
+        [HttpPost("INSERT_TBT_REAMRK_STATUS")]
+        public async ValueTask<IActionResult> INSERT_TBT_REAMRK_STATUS(tbt_remark_status condition)
+        {
+            try
+            {
+                var _userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                condition.REMARK_ID = _userid;
+                await this.service.INSERT_TBT_REAMRK_STATUS(condition);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         [HttpGet("ACCAPT/{ID}")]
         public async ValueTask<IActionResult> ACCAPT_NOTIFICATION(string ID)

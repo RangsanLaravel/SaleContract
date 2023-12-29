@@ -13,55 +13,214 @@
 </button>
 
 <!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade bd-example-modal-lg" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">ปรับสถานะงาน </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <input id="companyid" hidden />
-                    <div class="col-4">
-                        <label for="edpriority" class="form-label">Priority </label>
-                        <select id="edpriority" class="form-select" aria-label="Default select example">
-                            <option value="" selected>- ไม่แก้ไข -</option>
-                            @if (ViewData["priority"] != null)
-                            {
-                                var priority = ViewData["priority"] as List<SaleContractAPI.DataContract.Priority>;
-                                for (int i = 0; i < priority.Count; i++)
+                @if (ViewData["position"] == "CK")
+                {
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="edName" class="form-label">Name </label>
+                            <input type="text" name="edName" id="edName" class="form-control" />
+                        </div>
+                        <div class="col-4">
+                            <label for="edwebsite" class="form-label">Website </label>
+                            <input type="text" name="edwebsite" id="edwebsite" class="form-control" />
+                        </div>
+                        <div class="col-4">
+                            <label for="edContact" class="form-label">Contact </label>
+                            <input type="text" name="edContact" id="edContact" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input id="companyid" hidden />
+                        <div class="col-4">
+                            <label for="edpriority" class="form-label">Priority </label>
+                            <select id="edpriority" class="form-select" aria-label="Default select example">
+                                <option value="" selected>- ไม่แก้ไข -</option>
+                                @if (ViewData["priority"] != null)
                                 {
-                                    <option value="@priority[i].ID">@priority[i].Priority_description</option>
+                                    var priority = ViewData["priority"] as List<SaleContractAPI.DataContract.Priority>;
+                                    for (int i = 0; i < priority.Count; i++)
+                                    {
+                                        <option value="@priority[i].ID">@priority[i].Priority_description</option>
+                                    }
                                 }
-                            }
 
-                        </select>
-                    </div>
-                    <div class="col-4">
-                        <label for="edstatus" class="form-label">Status Company</label>
-                        <select id="edstatus" class="form-select" aria-label="Default select example">
-                            @if (ViewData["substatus"] != null)
-                            {
-                                var substatus = ViewData["substatus"] as List<SaleContractAPI.DataContract.substatus>;
-                                for (int i = 0; i < substatus.Count; i++)
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label for="edstatus" class="form-label">Status Company</label>
+                            <select id="edstatus" class="form-select" aria-label="Default select example">
+                                @if (ViewData["substatus"] != null)
                                 {
-                                    <option value="@substatus[i].STATUS_CODE">@substatus[i].STATUS_DESCRIPTION</option>
+                                    var substatus = ViewData["substatus"] as List<SaleContractAPI.DataContract.substatus>;
+                                    for (int i = 0; i < substatus.Count; i++)
+                                    {
+                                        <option value="@substatus[i].STATUS_CODE">@substatus[i].STATUS_DESCRIPTION</option>
+                                    }
                                 }
-                            }
-                        </select>
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label for="ednoti" class="form-label">Notification </label>
+                            <input type="date" id="ednoti" class="form-control" name="ednoti" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")">
+                        </div>
                     </div>
-                    <div class="col-4">
-                        <label for="ednoti" class="form-label">Notification </label>
-                        <input type="date" id="ednoti" name="ednoti" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")">
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="edPosition" class="form-label">Position </label>
+                            <input type="text" name="edPosition" id="edPosition" class="form-control" />
+                        </div>
+                        <div class="col-4">
+                            <label for="edEmail" class="form-label">edEmail </label>
+                            <input type="text" name="edEmail" id="edEmail" class="form-control" />
+                        </div>
+                        <div class="col-4">
+                            <label for="edMobile" class="form-label">Mobile </label>
+                            <input type="text" name="edMobile" id="edMobile" class="form-control" />
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <label for="remark" class="form-label">Remark</label>
-                        <textarea class="form-control" id="remark" rows="3"></textarea>
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="edModelTypes" class="form-label">Model Types </label>
+                            <input type="text" name="edModelTypes" id="edModelTypes" class="form-control" />
+                        </div>
+                        <div class="col-4">
+                            <label for="edLocation" class="form-label">Location </label>
+                            <input type="text" name="edLocation" id="edLocation" class="form-control" />
+                        </div>
+                        <div class="col-4">
+                            <label for="edPeople" class="form-label">People </label>
+                            <input type="text" name="edPeople" id="edPeople" class="form-control" />
+                        </div>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="edDealcreationdate" class="form-label">Deal creation date</label>
+                            <input type="date" id="edDealcreationdate" class="form-control" name="edDealcreationdate" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")">
+                        </div>
+                        <div class="col-4">
+                            <label for="edDuedatefollowup" class="form-label">Due date follow up </label>
+                            <input type="date" id="edDuedatefollowup" class="form-control" name="edDuedatefollowup" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")">
+                        </div>
+                        <div class="col-4">
+                            <label for="edDealvalue" class="form-label">Deal value </label>
+                            <input type="number" name="edDealvalue" class="form-control" id="edDealvalue" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="remark" class="form-label">Remark</label>
+                            <textarea class="form-control" id="remark" rows="3"></textarea>
+                        </div>
+                    </div>                  
+                }else
+                {
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="edName" class="form-label">Name </label>
+                            <input type="text" name="edName" id="edName" class="form-control" disabled />
+                        </div>
+                        <div class="col-4">
+                            <label for="edwebsite" class="form-label">Website </label>
+                            <input type="text" name="edwebsite" id="edwebsite" class="form-control" disabled />
+                        </div>
+                        <div class="col-4">
+                            <label for="edContact" class="form-label">Contact </label>
+                            <input type="text" name="edContact" id="edContact" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input id="companyid" hidden />
+                        <div class="col-4">
+                            <label for="edpriority" class="form-label">Priority </label>
+                            <select id="edpriority" class="form-select" aria-label="Default select example">
+                                <option value="" selected>- ไม่แก้ไข -</option>
+                                @if (ViewData["priority"] != null)
+                                {
+                                    var priority = ViewData["priority"] as List<SaleContractAPI.DataContract.Priority>;
+                                    for (int i = 0; i < priority.Count; i++)
+                                    {
+                                        <option value="@priority[i].ID">@priority[i].Priority_description</option>
+                                    }
+                                }
+
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label for="edstatus" class="form-label">Status Company</label>
+                            <select id="edstatus" class="form-select" aria-label="Default select example">
+                                @if (ViewData["substatus"] != null)
+                                {
+                                    var substatus = ViewData["substatus"] as List<SaleContractAPI.DataContract.substatus>;
+                                    for (int i = 0; i < substatus.Count; i++)
+                                    {
+                                        <option value="@substatus[i].STATUS_CODE">@substatus[i].STATUS_DESCRIPTION</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label for="ednoti" class="form-label">Notification </label>
+                            <input type="date" id="ednoti" class="form-control" name="ednoti" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="edPosition" class="form-label">Position </label>
+                            <input type="text" name="edPosition" id="edPosition" class="form-control" disabled />
+                        </div>
+                        <div class="col-4">
+                            <label for="edEmail" class="form-label">edEmail </label>
+                            <input type="text" name="edEmail" id="edEmail" class="form-control" />
+                        </div>
+                        <div class="col-4">
+                            <label for="edMobile" class="form-label">Mobile </label>
+                            <input type="text" name="edMobile" id="edMobile" class="form-control"  />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="edModelTypes" class="form-label">Model Types </label>
+                            <input type="text" name="edModelTypes" id="edModelTypes" class="form-control" />
+                        </div>
+                        <div class="col-4">
+                            <label for="edLocation" class="form-label">Location </label>
+                            <input type="text" name="edLocation" id="edLocation" class="form-control" />
+                        </div>
+                        <div class="col-4">
+                            <label for="edPeople" class="form-label">People </label>
+                            <input type="text" name="edPeople" id="edPeople" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="edDealcreationdate" class="form-label">Deal creation date</label>
+                            <input type="date" id="edDealcreationdate" class="form-control" name="edDealcreationdate" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")">
+                        </div>
+                        <div class="col-4">
+                            <label for="edDuedatefollowup" class="form-label">Due date follow up </label>
+                            <input type="date" id="edDuedatefollowup" class="form-control" name="edDuedatefollowup" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")">
+                        </div>
+                        <div class="col-4">
+                            <label for="edDealvalue" class="form-label">Deal value </label>
+                            <input type="number" name="edDealvalue" class="form-control" id="edDealvalue" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="remark" class="form-label">Remark</label>
+                            <textarea class="form-control" id="remark" rows="3"></textarea>
+                        </div>
+                    </div>
+                }
+               
             </div>
             <div class="modal-footer">
                 <button id="closemodal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -82,7 +241,13 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col">
-                        <div id="renderiframe" class="timeline-steps aos-init aos-animate" data-aos="fade-up">
+                        <div class="timeline-steps aos-init aos-animate" data-aos="fade-up">
+                            <div class="col-md-6 offset-md-3">
+                             <h4>Latest News</h4>
+                                <ul id="renderiframe" class="timeline">
+
+                            </ul>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -160,6 +325,7 @@
                 <th scope="col">Due date follow up </th>
                 <th scope="col">DealDateNoti</th>
                 <th scope="col">Deal value </th>
+                <th scope="col">% Persen </th>
                 <th scope="col">Won</th>
                 <th scope="col">Last Updated</th>
                 </tr>
@@ -171,24 +337,25 @@
                 {
                     <tr>
                         <th><a href="#" onclick="showtimeline('@Model[i].ID','@Model[i].NAME')"><i class="bi bi-plus-square-fill" style="font-size:15px"></i></a></th>
-                        <th ondblclick="showedit('@Model[i].ID')" scope="row">@(i + 1)</th>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].NAME </td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].WEBSITE </td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].Contract </td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].Position </td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].Email </td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].Mobile </td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].Owner </td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].ModelType </td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].People </td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].Status</td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].Priority_description </td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].DealCreate </td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].DealDateFollowup </td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].DealDateNoti </td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].DealValue </td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].Won</td>
-                        <td ondblclick="showedit('@Model[i].ID')">@Model[i].LastUpdate</td>
+                        <th ondblclick="showedit('@i')" scope="row">@(i + 1)</th>
+                        <td ondblclick="showedit('@i')">@Model[i].NAME </td>
+                        <td ondblclick="showedit('@i')">@Model[i].WEBSITE </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Contract </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Position </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Email </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Mobile </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Owner </td>
+                        <td ondblclick="showedit('@i')">@Model[i].ModelType </td>
+                        <td ondblclick="showedit('@i')">@Model[i].People </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Status</td>
+                        <td ondblclick="showedit('@i')">@Model[i].Priority_description </td>
+                        <td ondblclick="showedit('@i')">@Model[i].DealCreate </td>
+                        <td ondblclick="showedit('@i')">@Model[i].DealDateFollowup </td>
+                        <td ondblclick="showedit('@i')">@Model[i].DealDateNoti </td>
+                        <td ondblclick="showedit('@i')">@Model[i].DealValue </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Persen </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Won</td>
+                        <td ondblclick="showedit('@i')">@Model[i].LastUpdate</td>
                     </tr>
                 }
             }
@@ -203,20 +370,35 @@
 
 @section Scripts{
     <script>
+        const companydetail = @Html.Raw(Json.Serialize(Model));
+       
         $(document).ready(function (){
             new DataTable('#datarender', {
                 responsive: true
             });
         })
+        const position ='@ViewData["position"]'
 
         const clearbtn =()=>{
             let form = document.getElementById("frmsearch");
             form.reset();
         }
 
-        const showedit = (companyid) => {
-            $('#companyid').val(companyid)
-            $('#staticBackdropLabel').text(`ปรับสถานะ ${companyid}`)
+        const showedit = (i) => {
+            $('#companyid').val(companydetail[i].id)
+            $('#staticBackdropLabel').text(`ปรับสถานะ ${companydetail[i].name}`)
+            $('#edName').val(companydetail[i].name)
+            $('#edwebsite').val(companydetail[i].website)
+            $('#edContact').val(companydetail[i].contract)
+            $('#edPosition').val(companydetail[i].position)
+            $('#edEmail').val(companydetail[i].email)
+            $('#edMobile').val(companydetail[i].mobile)
+            $('#edModelTypes').val(companydetail[i].modelType)
+            $('#edLocation').val(companydetail[i].location)
+            $('#edPeople').val(companydetail[i].people)
+            $('#edDealvalue').val(companydetail[i].dealvalue)
+            $('#edDealcreationdate').val(companydetail[i].dealcreationdate)
+            $('#edDuedatefollowup').val(companydetail[i].duedatefollowup)
             $('#showedit').click()
         }
 
@@ -233,15 +415,14 @@
                         if (response.data) {
                             let render = ''
                             for (let i = 0; i < response.data.length; i++) {
-                                render += `<div class="timeline-step">
-                                                        <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2003">
-                                                            <div class="inner-circle"></div>
-                                                                        <p class="h6 mt-3 mb-1">${response.data[i].status_description ?? ''}</p>
-                                                                        <p class="h6 text-muted mb-0 mb-lg-0">${response.data[i].fsystem_id ?? ''}</p>
-                                                                        <p class="h6 text-muted mb-0 mb-lg-0">${response.data[i].fsystem_dt ?? ''}</p>
-                                                                        <p class="h6 text-muted mb-0 mb-lg-0">${response.data[i].remark ?? ''}</p>
-                                                        </div>
-                                                            </div><i class="fa-solid fa-arrow-right"></i>`
+                                render += `
+                                <li>
+                                    <p><strong>change to ::</strong> </p>
+                                    <p><strong>change date ::</strong> </p>
+                                    <p><strong>change by ::</strong> </p>
+                                    <p><strong>due date :: </strong> </p>
+                                </li>
+                              `
                             }
                             $('#renderiframe').append(render)
                             $('#showtimeline').click()
@@ -271,7 +452,7 @@
 
         }
 
-        const updatestatus = () => {
+        const updatestatus = () => {            
             $.ajax({
                 url: '@Url.Action("UpdateStatus", "Home")',
                 type: 'POST',
@@ -281,7 +462,19 @@
                     priority: $('#edpriority').val(),
                     status_code: $('#edstatus').val(),
                     remark: $('#remark').val(),
-                    noti_dt: $('#ednoti').val()
+                    noti_dt: $('#ednoti').val(),
+                   name: $('#edName').val(),
+                   website: $('#edwebsite').val(),
+                   contract: $('#edContact').val(),
+                   position: $('#edPosition').val(),
+                  email:  $('#edEmail').val(),
+                  mobile:  $('#edMobile').val(),
+                   modeltype: $('#edModelTypes').val(),
+                   location: $('#edLocation').val(),
+                  people: $('#edPeople').val(),
+                 dealvalue:$('#edDealvalue').val(),
+                   Dealcreationdate:  $('#edDealcreationdate').val(),
+                   Duedatefollowup: $('#edDuedatefollowup').val()
                 },
                 success: function (response) {
 
@@ -292,8 +485,8 @@
                         setTimeout(function () {
                             //your code to be executed after 1 second
                             $('#closemodal').click()
-                            $('#search').click()
-                        }, 3000);
+                            $('#frmsearch').submit()
+                        }, 2000);
                     } else {
                         Swal.fire({
                             icon: "error",

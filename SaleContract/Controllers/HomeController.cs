@@ -22,8 +22,8 @@ namespace SaleContract.Controllers
         }
         public IActionResult Index(SEARCH_COMPANY condition)
         {
-            if (HttpContext.Session.GetString("token") is null)
-                return RedirectToAction("Logout");
+            //if (HttpContext.Session.GetString("token") is null)
+            //    return RedirectToAction("Logout");
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
             RestRequest request = new RestRequest($"api/v1/Manages/GET_COMPANY", Method.Post);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
@@ -65,10 +65,13 @@ namespace SaleContract.Controllers
             ViewBag.Fullname = HttpContext.Session.GetString("fullname");
             ViewData["priority"] = GET_PRIORITY();
             ViewData["substatus"] = GET_STATUS();
-          //  ViewBag.Substatus = HttpContext.Session.GetString("substatus") == null ? null : JsonSerializer.Deserialize<List<substatus>>(HttpContext.Session.GetString("substatus"));
-           // ViewBag.priority = HttpContext.Session.GetString("priority") == null ? null : JsonSerializer.Deserialize<List<Priority>>(HttpContext.Session.GetString("priority"));
+            ViewData["position"] = "CK";
+            //ViewData["position"] = HttpContext.Session.GetString("position");
+            //  ViewBag.Substatus = HttpContext.Session.GetString("substatus") == null ? null : JsonSerializer.Deserialize<List<substatus>>(HttpContext.Session.GetString("substatus"));
+            // ViewBag.priority = HttpContext.Session.GetString("priority") == null ? null : JsonSerializer.Deserialize<List<Priority>>(HttpContext.Session.GetString("priority"));
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
+               
                 return View(response?.Data);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
@@ -101,6 +104,7 @@ namespace SaleContract.Controllers
             {
                 HttpContext.Session.SetString("userinfo", JsonSerializer.Serialize(response.Data));
                 HttpContext.Session.SetString("fullname", response.Data.fullname);
+                HttpContext.Session.SetString("position", response.Data.position);
             }
         }
 
@@ -172,7 +176,8 @@ namespace SaleContract.Controllers
         }
 
         public IActionResult Create(company_detail company)
-        {        
+        {
+            ViewBag.Fullname = HttpContext.Session.GetString("fullname");
             company.Priority_description = "1234";
             company.Owner = "1234";
             company.ID = "1234";
