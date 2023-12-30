@@ -69,7 +69,7 @@
                         </div>
                         <div class="col-4">
                             <label for="ednoti" class="form-label">Notification </label>
-                            <input type="date" id="ednoti" class="form-control" name="ednoti" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")">
+                            <input type="text" id="ednoti" class="form-control" name="ednoti">
                         </div>
                     </div>
                     <div class="row">
@@ -78,7 +78,7 @@
                             <input type="text" name="edPosition" id="edPosition" class="form-control" />
                         </div>
                         <div class="col-4">
-                            <label for="edEmail" class="form-label">edEmail </label>
+                            <label for="edEmail" class="form-label">Email </label>
                             <input type="text" name="edEmail" id="edEmail" class="form-control" />
                         </div>
                         <div class="col-4">
@@ -103,15 +103,21 @@
                     <div class="row">
                         <div class="col-4">
                             <label for="edDealcreationdate" class="form-label">Deal creation date</label>
-                            <input type="date" id="edDealcreationdate" class="form-control" name="edDealcreationdate" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")">
+                            <input type="text" id="edDealcreationdate" class="form-control" name="edDealcreationdate" >
                         </div>
                         <div class="col-4">
                             <label for="edDuedatefollowup" class="form-label">Due date follow up </label>
-                            <input type="date" id="edDuedatefollowup" class="form-control" name="edDuedatefollowup" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")">
+                            <input type="text" id="edDuedatefollowup" class="form-control" name="edDuedatefollowup">
                         </div>
                         <div class="col-4">
                             <label for="edDealvalue" class="form-label">Deal value </label>
                             <input type="number" name="edDealvalue" class="form-control" id="edDealvalue" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="edPersen" class="form-label">Persen</label>
+                            <input type="number" id="edPersen" class="form-control" name="edPersen" disabled>
                         </div>
                     </div>
                     <div class="row">
@@ -168,7 +174,7 @@
                         </div>
                         <div class="col-4">
                             <label for="ednoti" class="form-label">Notification </label>
-                            <input type="date" id="ednoti" class="form-control" name="ednoti" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")">
+                            <input type="text" id="ednoti" class="form-control" name="ednoti" >
                         </div>
                     </div>
                     <div class="row">
@@ -177,7 +183,7 @@
                             <input type="text" name="edPosition" id="edPosition" class="form-control" disabled />
                         </div>
                         <div class="col-4">
-                            <label for="edEmail" class="form-label">edEmail </label>
+                            <label for="edEmail" class="form-label">Email </label>
                             <input type="text" name="edEmail" id="edEmail" class="form-control" />
                         </div>
                         <div class="col-4">
@@ -202,16 +208,22 @@
                     <div class="row">
                         <div class="col-4">
                             <label for="edDealcreationdate" class="form-label">Deal creation date</label>
-                            <input type="date" id="edDealcreationdate" class="form-control" name="edDealcreationdate" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")">
+                            <input type="text" id="edDealcreationdate" class="form-control" name="edDealcreationdate" >
                         </div>
                         <div class="col-4">
                             <label for="edDuedatefollowup" class="form-label">Due date follow up </label>
-                            <input type="date" id="edDuedatefollowup" class="form-control" name="edDuedatefollowup" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")">
+                            <input type="text" id="edDuedatefollowup" class="form-control" name="edDuedatefollowup">
                         </div>
                         <div class="col-4">
                             <label for="edDealvalue" class="form-label">Deal value </label>
                             <input type="number" name="edDealvalue" class="form-control" id="edDealvalue" />
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="edPersen" class="form-label">Persen</label>
+                            <input type="number" id="edPersen" class="form-control" name="edPersen">
+                        </div>                       
                     </div>
                     <div class="row">
                         <div class="col-12">
@@ -371,7 +383,9 @@
 @section Scripts{
     <script>
         const companydetail = @Html.Raw(Json.Serialize(Model));
-       
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        const dateLocation ='en-US'
+        const dateformat ='$2/$1/$3'
         $(document).ready(function (){
             new DataTable('#datarender', {
                 responsive: true
@@ -385,6 +399,7 @@
         }
 
         const showedit = (i) => {
+            
             $('#companyid').val(companydetail[i].id)
             $('#staticBackdropLabel').text(`ปรับสถานะ ${companydetail[i].name}`)
             $('#edName').val(companydetail[i].name)
@@ -396,9 +411,24 @@
             $('#edModelTypes').val(companydetail[i].modelType)
             $('#edLocation').val(companydetail[i].location)
             $('#edPeople').val(companydetail[i].people)
-            $('#edDealvalue').val(companydetail[i].dealvalue)
-            $('#edDealcreationdate').val(companydetail[i].dealcreationdate)
-            $('#edDuedatefollowup').val(companydetail[i].duedatefollowup)
+            $('#edDealvalue').val(companydetail[i].dealValue)
+            $('#edPersen').val(companydetail[i].persen) 
+            if (companydetail[i].dealCreate) {
+              
+                $('#edDealcreationdate').datepicker({
+                    uiLibrary: 'bootstrap5'
+                });
+                $('#edDealcreationdate').val(getdate(companydetail[i].dealCreate))
+            }
+            if (companydetail[i].duedatefollowup){
+                $('#edDuedatefollowup').datepicker({
+                    uiLibrary: 'bootstrap5'
+                });
+                $('#edDuedatefollowup').val(getdate(companydetail[i].duedatefollowup))
+            }
+            $('#ednoti').datepicker({
+                uiLibrary: 'bootstrap5'
+            });
             $('#showedit').click()
         }
 
@@ -467,12 +497,12 @@
                    website: $('#edwebsite').val(),
                    contract: $('#edContact').val(),
                    position: $('#edPosition').val(),
-                  email:  $('#edEmail').val(),
-                  mobile:  $('#edMobile').val(),
+                   email:  $('#edEmail').val(),
+                   mobile:  $('#edMobile').val(),
                    modeltype: $('#edModelTypes').val(),
                    location: $('#edLocation').val(),
-                  people: $('#edPeople').val(),
-                 dealvalue:$('#edDealvalue').val(),
+                   people: $('#edPeople').val(),
+                   dealvalue:$('#edDealvalue').val(),
                    Dealcreationdate:  $('#edDealcreationdate').val(),
                    Duedatefollowup: $('#edDuedatefollowup').val()
                 },
@@ -501,6 +531,12 @@
                 }
             });
 
+        }
+
+        const getdate =(dt)=>{
+            let dt = new Date(dt);
+            let dtstr = dt.toLocaleString(dateLocation, options);
+            return dtstr.replace(/(\d{2})\/(\d{2})\/(\d{4})/, dateformat);
         }
     </script>
 }
