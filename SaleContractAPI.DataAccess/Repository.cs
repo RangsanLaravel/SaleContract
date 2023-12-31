@@ -156,7 +156,7 @@ ORDER BY tbtst.FSYSTEM_DT ASC"
       ,[Position]
       ,[Email]
       ,[Mobile]
-      ,[Owner]
+      ,(select CONCAT(fullname,' ',lastname)  FROM [{DBENV}].[dbo].[tbm_employee] where user_id = Owner AND status =1) Owner
       ,[ModelType]
       ,[People]
       ,[Status]
@@ -256,7 +256,7 @@ WITH RecursiveCTE AS (
 		(select CONCAT(fullname,' ',lastname)  FROM [{DBENV}].[dbo].[tbm_employee] where user_id = REMARK_ID AND status =1) REMARK_ID,
 		ID_REMARK_UPLINE
     FROM
-        tbt_remark_status
+        [{DBENV}].[dbo].tbt_remark_status
     WHERE
         ID_STATUS_SALE IS NULL
 		AND TMN_FLG ='N'
@@ -273,7 +273,7 @@ WITH RecursiveCTE AS (
 		(select CONCAT(fullname,' ',lastname)  FROM [{DBENV}].[dbo].[tbm_employee] where user_id = e.REMARK_ID AND status =1) REMARK_ID,
 		e.ID_REMARK_UPLINE
     FROM
-        tbt_remark_status e
+        [{DBENV}].[dbo].tbt_remark_status e
     INNER JOIN
         RecursiveCTE r ON e.ID_REMARK_UPLINE = r.ID
 	WHERE  TMN_FLG ='N'
@@ -495,7 +495,7 @@ WHERE ID =@ID "
             sql.Parameters.AddWithValue("@website", string.IsNullOrEmpty( condition.website) ? (object)DBNull.Value :condition.website);
             sql.Parameters.AddWithValue("@name", string.IsNullOrEmpty( condition.name) ? (object)DBNull.Value :condition.name);
             sql.Parameters.AddWithValue("@Contract", string.IsNullOrEmpty( condition.contract)? (object)DBNull.Value :condition.contract);
-            sql.Parameters.AddWithValue("@persen", string.IsNullOrEmpty( condition.persen)? (object)DBNull.Value :condition.priority);
+            sql.Parameters.AddWithValue("@persen", string.IsNullOrEmpty( condition.persen)? (object)DBNull.Value :condition.persen);
             sql.Parameters.AddWithValue("@location", string.IsNullOrEmpty( condition.Location) ? (object)DBNull.Value :condition.Location);
             sql.Parameters.AddWithValue("@Position", string.IsNullOrEmpty( condition.position) ? (object)DBNull.Value :condition.position);
             sql.Parameters.AddWithValue("@email", string.IsNullOrEmpty( condition.email)? (object)DBNull.Value :condition.email);

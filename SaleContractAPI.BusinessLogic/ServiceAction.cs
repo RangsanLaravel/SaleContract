@@ -82,11 +82,17 @@ namespace SaleContractAPI.BusinessLogic
                         {
                             item.due_dt = company.FirstOrDefault().DealDateNoti;
                         }
+                        
                         var remrk = await GET_REMARK(item.ID.ToString(),repository);
-                        if(remrk != null)
+                        if(remrk != null && remrk.Count > 0)
                         {
                             item.remark_Statuses = new List<tbt_remark_status>();
                             item.remark_Statuses = remrk;
+                        }
+                        var getidremark =  await repository.GET_tbt_remark_status(item.ID.ToString());
+                        if(getidremark != null)
+                        {
+                            item.ID = Convert.ToInt32(getidremark.FirstOrDefault().ID);
                         }
                     }
                 }
@@ -109,11 +115,12 @@ namespace SaleContractAPI.BusinessLogic
             List<tbt_remark_status> remark = new List<tbt_remark_status>();
             var mainremark = await repository.GET_tbt_remark_status(IDSTATUS);
             if (mainremark != null)
-            {
-                remark.AddRange(remark);
+            {     
                 var reply = await repository.GET_tbt_remark_status_UPLINE(mainremark.FirstOrDefault().ID);
                 if (reply != null)
                     remark.AddRange(reply);
+                else
+                    return null;
                 return remark;
             }
             else
@@ -167,9 +174,14 @@ namespace SaleContractAPI.BusinessLogic
             try
             {
                var companyid = await repository.INSERT_TBT_COMPANY_DETAIL(condition);
-               await repository.INSERT_TBT_SALE_STATUS(new TBT_SALE_STATUS { company_id = companyid  
+             var idstatussale=  await repository.INSERT_TBT_SALE_STATUS(new TBT_SALE_STATUS { company_id = companyid  
                     ,  status_code =condition.Status
                     ,fsystem_id =condition.Owner
+                });
+                await  repository.INSERT_TBT_REAMRK_STATUS(new tbt_remark_status
+                {
+                    ID_STATUS_SALE = idstatussale.ToString(),
+                    REMARK_ID = condition.Owner
                 });
                 await repository.CommitTransection();
             }
@@ -228,13 +240,36 @@ namespace SaleContractAPI.BusinessLogic
                     await repository.UPDATE_TBT_COMPANY_DETAIL_WON(condition.company_id.ToString());
                 }
                 await repository.UPDATE_TBT_COMPANY_DETAIL_STATUS(condition.status_code,condition.company_id.ToString());
-                if (!string.IsNullOrWhiteSpace( condition.priority))
-                {
-                    await repository.UPDATE_TBT_COMPANY_DETAIL(new company_detail {ID=condition.company_id.ToString(),Priority=condition.priority });
-                }
+                //var companeydetail = new company_detail
+                //{
+                //    ID = condition.company_id.ToString(),
+                //    NAME=condition.name,
+                //    WEBSITE=condition.website,
+                //    Contract =condition.contract,
+                //    Email =condition.email,
+                //    location =condition.Location,
+                //    Priority = condition.priority,
+                //    People =condition.People,
+                //    Persen =condition.persen,
+                //    Position=condition.position,
+                //    DealValue =condition.Dealvalue,
+                //    DealCreate =string.IsNullOrEmpty(condition.Dealcreationdate)? (DateTime?)null: DateTime.ParseExact(condition.Dealcreationdate, "dd/MM/yyyy",
+                //                       System.Globalization.CultureInfo.InvariantCulture) ,
+                //    DealDateFollowup = string.IsNullOrEmpty(condition.Duedatefollowup) ? (DateTime?)null : DateTime.ParseExact(condition.Duedatefollowup, "dd/MM/yyyy",
+                //                       System.Globalization.CultureInfo.InvariantCulture),
+                //    DealDateNoti = string.IsNullOrEmpty(condition.noti_dt) ? (DateTime?)null : DateTime.ParseExact(condition.noti_dt, "dd/MM/yyyy",
+                //                       System.Globalization.CultureInfo.InvariantCulture),
+                //    Mobile =condition.mobile,
+                //    ModelType=condition.modelType
+
+                //};
+                await repository.UPDATE_TBT_COMPANY(condition);
+                
                 if (!string.IsNullOrEmpty(condition.noti_dt))
                 {
-                    await repository.INSERT_TBT_SALE_NOTIFICATION(new tbt_sale_notification { companyid= condition.company_id.ToString(),noti_dt = DateTime.Parse(condition.noti_dt) });
+                    await repository.INSERT_TBT_SALE_NOTIFICATION(new tbt_sale_notification { companyid= condition.company_id.ToString(),noti_dt = DateTime.ParseExact(condition.noti_dt, "dd/MM/yyyy",
+                                       System.Globalization.CultureInfo.InvariantCulture)
+                    });
                 }
                 await repository.CommitTransection();
             }

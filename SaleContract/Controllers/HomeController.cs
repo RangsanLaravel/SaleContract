@@ -22,8 +22,8 @@ namespace SaleContract.Controllers
         }
         public IActionResult Index(SEARCH_COMPANY condition)
         {
-            //if (HttpContext.Session.GetString("token") is null)
-            //    return RedirectToAction("Logout");
+            if (HttpContext.Session.GetString("token") is null)
+                return RedirectToAction("Logout");
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
             RestRequest request = new RestRequest($"api/v1/Manages/GET_COMPANY", Method.Post);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
@@ -65,8 +65,8 @@ namespace SaleContract.Controllers
             ViewBag.Fullname = HttpContext.Session.GetString("fullname");
             ViewData["priority"] = GET_PRIORITY();
             ViewData["substatus"] = GET_STATUS();
-            ViewData["position"] = "CK";
-            //ViewData["position"] = HttpContext.Session.GetString("position");
+            //ViewData["position"] = "CK";
+            ViewData["position"] = HttpContext.Session.GetString("position");
             //  ViewBag.Substatus = HttpContext.Session.GetString("substatus") == null ? null : JsonSerializer.Deserialize<List<substatus>>(HttpContext.Session.GetString("substatus"));
             // ViewBag.priority = HttpContext.Session.GetString("priority") == null ? null : JsonSerializer.Deserialize<List<Priority>>(HttpContext.Session.GetString("priority"));
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -162,10 +162,25 @@ namespace SaleContract.Controllers
             RestRequest request = new RestRequest($"/api/v1/Manages/INSERT_TBT_SALE_STATUS", Method.Post);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
             data.priority = data.priority ?? string.Empty;
+            data.name = data.name ?? string.Empty;
+            data.website = data.website ?? string.Empty;
+            data.contract = data.contract ?? string.Empty;
             data.remark = data.remark ?? string.Empty;
             data.tmn_flg = string.Empty;
             data.status_description = string.Empty;
+            data.persen = data.persen ?? string.Empty;
+            data.Location = data.Location ?? string.Empty;
+            data.position = data.position ?? string.Empty;
+            data.modelType = data.modelType ?? string.Empty;
+            data.mobile = data.mobile ?? string.Empty;
+            data.email = data.email ?? string.Empty;
+            data.People = data.People ?? string.Empty;
+            data.Dealvalue = data.Dealvalue ?? string.Empty;
+            data.Dealcreationdate = data.Dealcreationdate ?? string.Empty;
+            data.Duedatefollowup = data.Duedatefollowup ?? string.Empty;
+            data.noti_dt = data.noti_dt ?? string.Empty;
             data.fsystem_id = string.Empty;
+            data.remark_Statuses = new List<tbt_remark_status>();
             request.AddJsonBody(data);
             var response = client.Execute(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -175,6 +190,27 @@ namespace SaleContract.Controllers
             return Json(new { success = false, error = response.Content });
         }
 
+        [HttpPost]
+        public IActionResult INSERT_REMARK_REPLY(tbt_remark_status data)
+        {
+            if (HttpContext.Session.GetString("token") is null)
+                return RedirectToAction("Logout");
+            RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
+            RestRequest request = new RestRequest($"/api/v1/Manages/INSERT_TBT_REAMRK_STATUS", Method.Post);
+            request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
+            data.TMN_FLG = "N";
+            data.REMARK_ID  =  string.Empty;
+            data.ID_STATUS_SALE = string.Empty;
+            data.REMARK_DT = string.Empty;
+            data.ID = string.Empty;
+            request.AddJsonBody(data);
+            var response = client.Execute(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return Json(new { success = true });
+            }
+            return Json(new { success = false, error = response.Content });
+        }
         public IActionResult Create(company_detail company)
         {
             ViewBag.Fullname = HttpContext.Session.GetString("fullname");

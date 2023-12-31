@@ -54,3 +54,18 @@ ul.timeline {
             height: 20px;
             z-index: 400;
         }
+.frame {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.label {
+    font-weight: bold;
+}
+.reply-link {
+    text-align: right;
+    color: blue; /* หรือสีที่คุณต้องการ */
+    cursor: pointer;
+    text-decoration: none; /* ไม่ต้องการ underline สำหรับลิงก์ */
+    display: block; /* เพิ่มบรรทัดนี้ */
+}

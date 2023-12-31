@@ -12,6 +12,11 @@
     Launch static backdrop modal
 </button>
 
+<!-- Button trigger modal -->
+<button type="button" id="showreply" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reply" hidden>
+    Launch static backdrop modal
+</button>
+
 <!-- Modal -->
 <div class="modal fade bd-example-modal-lg" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -42,7 +47,6 @@
                         <div class="col-4">
                             <label for="edpriority" class="form-label">Priority </label>
                             <select id="edpriority" class="form-select" aria-label="Default select example">
-                                <option value="" selected>- ไม่แก้ไข -</option>
                                 @if (ViewData["priority"] != null)
                                 {
                                     var priority = ViewData["priority"] as List<SaleContractAPI.DataContract.Priority>;
@@ -147,7 +151,6 @@
                         <div class="col-4">
                             <label for="edpriority" class="form-label">Priority </label>
                             <select id="edpriority" class="form-select" aria-label="Default select example">
-                                <option value="" selected>- ไม่แก้ไข -</option>
                                 @if (ViewData["priority"] != null)
                                 {
                                     var priority = ViewData["priority"] as List<SaleContractAPI.DataContract.Priority>;
@@ -255,7 +258,7 @@
                     <div class="col">
                         <div class="timeline-steps aos-init aos-animate" data-aos="fade-up">
                             <div class="col-md-6 offset-md-3">
-                             <h4>Latest News</h4>
+                             <h4>Status</h4>
                                 <ul id="renderiframe" class="timeline">
 
                             </ul>
@@ -267,6 +270,30 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Remark -->
+<div class="modal fade" id="reply" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Remark </h1>
+                <button id="clsreply" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input id="ID_REMARK_UPLINE" hidden/>
+                <div class="row">
+                    <div class="col-12">                    
+                        <textarea class="form-control" id="remarkreply" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <button type="button" class="btn btn-primary" onclick="SaveRemark()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <form id="frmsearch" asp-action="Index" asp-controller="Home" asp-antiforgery="true">
     <div class="row">
         <div class="mb-3">
@@ -412,23 +439,26 @@
             $('#edLocation').val(companydetail[i].location)
             $('#edPeople').val(companydetail[i].people)
             $('#edDealvalue').val(companydetail[i].dealValue)
-            $('#edPersen').val(companydetail[i].persen) 
-            if (companydetail[i].dealCreate) {
-              
-                $('#edDealcreationdate').datepicker({
-                    uiLibrary: 'bootstrap5'
-                });
-                $('#edDealcreationdate').val(getdate(companydetail[i].dealCreate))
-            }
-            if (companydetail[i].duedatefollowup){
-                $('#edDuedatefollowup').datepicker({
-                    uiLibrary: 'bootstrap5'
-                });
-                $('#edDuedatefollowup').val(getdate(companydetail[i].duedatefollowup))
-            }
+            $('#edPersen').val((companydetail[i].persen * 100) / companydetail[i].dealValue)
+            $('#edDealcreationdate').datepicker({
+                uiLibrary: 'bootstrap5'
+            });
+            $('#edDuedatefollowup').datepicker({
+                uiLibrary: 'bootstrap5'
+            });
             $('#ednoti').datepicker({
                 uiLibrary: 'bootstrap5'
             });
+            if (companydetail[i].dealCreate) {                          
+                $('#edDealcreationdate').val(getdate(companydetail[i].dealCreate))
+            }
+            if (companydetail[i].dealDateFollowup){             
+                $('#edDuedatefollowup').val(getdate(companydetail[i].dealDateFollowup))
+            }
+            if (companydetail[i].dealDateNoti) {
+                $('#ednoti').val(getdate(companydetail[i].dealDateNoti))
+            }
+        
             $('#showedit').click()
         }
 
@@ -444,13 +474,37 @@
                     if (response.success) {
                         if (response.data) {
                             let render = ''
+                            
+                            console.log(response.data)
                             for (let i = 0; i < response.data.length; i++) {
+                                let rederreply = ''
+                                let tmpchkdup = '';
+                                let mrg = 50;
+                                if (response.data[i].remark_Statuses) {
+                                    console.log(response.data[i].remark_Statuses)
+                                     for(let j = 0; j < response.data[i].remark_Statuses.length; j++) {
+                                         rederreply += `<div style="margin-left:${mrg}px;" class="frame">
+                                                                              <p><span class="label">Remark ::</span>${response.data[i].remark_Statuses[j].remark}</p>
+                                                                                              <p><span class="label">Remark by ::</span>${response.data[i].remark_Statuses[j].remarK_ID}</p>
+                                                                                      <p><span class="label">Remark date ::</span>${response.data[i].remark_Statuses[j].remarK_DT}</p>
+                                                                       <a href="#" class="reply-link" onclick="showremark('${response.data[i].remark_Statuses[j].id}')">reply</a>
+                                            </div>`;
+                                        if (tmpchkdup != response.data[i].remark_Statuses[j].ID_REMARK_UPLINE) {
+                                            mrg = mrg + 10;
+                                        }
+                                        tmpchkdup = response.data[i].remark_Statuses[j].ID_REMARK_UPLINE;
+                                     }
+                                 }
                                 render += `
                                 <li>
-                                    <p><strong>change to ::</strong> </p>
-                                    <p><strong>change date ::</strong> </p>
-                                    <p><strong>change by ::</strong> </p>
-                                    <p><strong>due date :: </strong> </p>
+                                   <div class="frame">
+                                              <p><strong class="label">change to ::</strong>${response.data[i].status_description}</p>
+                                                      <p><strong class="label">change date ::</strong>${formatedate(response.data[i].fsystem_dt)}</p>
+                                                      <p><strong class="label">change by ::</strong>${response.data[i].fsystem_id}</p>
+                                                      <p><strong class="label">due date ::</strong>${formatedate(response.data[i].due_dt)}</p>
+                                              <a href="#" class="reply-link" onclick="showremark('${response.data[i].id}')">reply</a>
+                                   </div>
+                                           ${rederreply}
                                 </li>
                               `
                             }
@@ -496,7 +550,8 @@
                    name: $('#edName').val(),
                    website: $('#edwebsite').val(),
                    contract: $('#edContact').val(),
-                   position: $('#edPosition').val(),
+                    position: $('#edPosition').val(),
+                    persen: $('#edPersen').val(),
                    email:  $('#edEmail').val(),
                    mobile:  $('#edMobile').val(),
                    modeltype: $('#edModelTypes').val(),
@@ -533,10 +588,51 @@
 
         }
 
-        const getdate =(dt)=>{
-            let dt = new Date(dt);
+        const getdate =(dtvalue)=>{
+            let dt = new Date(dtvalue);
             let dtstr = dt.toLocaleString(dateLocation, options);
             return dtstr.replace(/(\d{2})\/(\d{2})\/(\d{4})/, dateformat);
+        }
+        const showremark =(id)=>{
+            $('#ID_REMARK_UPLINE').val(id)
+            $('#showreply').click()
+        }
+        const SaveRemark=()=>{
+            $.ajax({
+                        url: '@Url.Action("INSERT_REMARK_REPLY", "Home")',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            ID_REMARK_UPLINE: $('#ID_REMARK_UPLINE').val(),
+                            REMARK: $('#remarkreply').val()
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire("Saved!", "", "success");
+                        $('#remarkreply').val('')
+                        $('#clsreply').click()
+                    } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: response.error
+                                });
+                            }
+
+                        },
+                        error: function () {
+
+                        }
+                    });
+        }
+
+        const formatedate =(date)=>{
+            
+            // แปลงเป็นวัตถุ Date
+            let dateObject = new Date(date);
+
+            // จัดรูปแบบวันที่และเวลา
+            return `${dateObject.getMonth() + 1}/${dateObject.getDate()}/${dateObject.getFullYear()} ${dateObject.toLocaleTimeString()}`;
         }
     </script>
 }
