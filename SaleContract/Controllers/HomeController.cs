@@ -158,36 +158,56 @@ namespace SaleContract.Controllers
         {
             if (HttpContext.Session.GetString("token") is null)
                 return RedirectToAction("Logout");
-            RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
-            RestRequest request = new RestRequest($"/api/v1/Manages/INSERT_TBT_SALE_STATUS", Method.Post);
-            request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
-            data.priority = data.priority ?? string.Empty;
-            data.name = data.name ?? string.Empty;
-            data.website = data.website ?? string.Empty;
-            data.contract = data.contract ?? string.Empty;
-            data.remark = data.remark ?? string.Empty;
-            data.tmn_flg = string.Empty;
-            data.status_description = string.Empty;
-            data.persen = data.persen ?? string.Empty;
-            data.Location = data.Location ?? string.Empty;
-            data.position = data.position ?? string.Empty;
-            data.modelType = data.modelType ?? string.Empty;
-            data.mobile = data.mobile ?? string.Empty;
-            data.email = data.email ?? string.Empty;
-            data.People = data.People ?? string.Empty;
-            data.Dealvalue = data.Dealvalue ?? string.Empty;
-            data.Dealcreationdate = data.Dealcreationdate ?? string.Empty;
-            data.Duedatefollowup = data.Duedatefollowup ?? string.Empty;
-            data.noti_dt = data.noti_dt ?? string.Empty;
-            data.fsystem_id = string.Empty;
-            data.remark_Statuses = new List<tbt_remark_status>();
-            request.AddJsonBody(data);
-            var response = client.Execute(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            try
             {
-                return Json(new { success = true });
+                RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
+                RestRequest request = new RestRequest($"/api/v1/Manages/INSERT_TBT_SALE_STATUS", Method.Post);
+                request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
+                data.priority = data.priority ?? string.Empty;
+                data.name = data.name ?? string.Empty;
+                data.website = data.website ?? string.Empty;
+                data.contract = data.contract ?? string.Empty;
+                data.remark = data.remark ?? string.Empty;
+                data.tmn_flg = string.Empty;
+                data.status_description = string.Empty;
+                data.persen = data.persen ?? string.Empty;
+                data.Location = data.Location ?? string.Empty;
+                data.position = data.position ?? string.Empty;
+                data.modelType = data.modelType ?? string.Empty;
+                data.mobile = data.mobile ?? string.Empty;
+                data.email = data.email ?? string.Empty;
+                data.People = data.People ?? string.Empty;
+                data.Dealvalue = data.Dealvalue ?? string.Empty;
+                data.Dealcreationdate = data.Dealcreationdate ?? string.Empty;
+                data.Duedatefollowup = data.Duedatefollowup ?? string.Empty;
+                data.noti_dt = data.noti_dt ?? string.Empty;
+                data.fsystem_id = string.Empty;
+                data.remark_Statuses = new List<tbt_remark_status>();
+                request.AddJsonBody(data);
+                var response = client.Execute<UserInfo>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    if (!string.IsNullOrEmpty(response?.Data?.email))
+                    {
+                        email_service email = new email_service
+                        {
+                            email = response.Data.email,
+                            subject = $"Message From {data.name}",
+                            body = $"Message From {data.name} Check in Remark"
+                        };
+
+                        SendEmail(email);
+                    }
+                    return Json(new { success = true });
+                }
+                throw new Exception(response.Content);
             }
-            return Json(new { success = false, error = response.Content });
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = $"{ex.Message} ::{ex.StackTrace}"  });
+            }
+                     
+           
         }
 
         [HttpPost]
@@ -258,6 +278,19 @@ namespace SaleContract.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private async ValueTask SendEmail(email_service email)
+        {
+            RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
+            RestRequest request = new RestRequest($"/api/v1/Manages/INSERT_TBT_SALE_STATUS", Method.Post);
+            request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
+            request.AddJsonBody(email);
+            var response = client.Execute(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var a = 1;
+            }
         }
     }
 }

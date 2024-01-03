@@ -196,15 +196,17 @@ namespace SaleContractAPI.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
         }
-        public async ValueTask INSERT_TBT_REAMRK_STATUS(tbt_remark_status condition)
+        public async ValueTask<UserInfo> INSERT_TBT_REAMRK_STATUS(tbt_remark_status condition)
         {
             Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
             {
-                await repository.INSERT_TBT_REAMRK_STATUS(condition);              
+                await repository.INSERT_TBT_REAMRK_STATUS(condition);
+                var userinfo = await repository.GET_EMAIL(condition.ID_REMARK_UPLINE);
                 await repository.CommitTransection();
+                return userinfo;
             }
             catch (Exception ex)
             {
@@ -225,7 +227,7 @@ namespace SaleContractAPI.BusinessLogic
             try
             {
             var idstatus =    await repository.INSERT_TBT_SALE_STATUS(condition);
-                if (string.IsNullOrEmpty(condition.remark))
+                if (!string.IsNullOrEmpty(condition.remark))
                 {
                     tbt_remark_status remrk = new tbt_remark_status
                     {

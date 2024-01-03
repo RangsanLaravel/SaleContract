@@ -107,6 +107,34 @@ ORDER BY Priority_SEQ ASC"
         }
 
 
+        public async ValueTask<UserInfo> GET_EMAIL(string ID_REMARK_UPLINE)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"SELECT
+      em.*
+  FROM [ISEE_DEV3].[dbo].[tbm_employee] em
+  INNER JOIN [ISEE_DEV3].[dbo].[tbt_remark_status] st on st.remark_id =em.user_id
+  WHERE em.status =1
+  AND st.TMN_FLG ='N'
+  AND st.ID =@idremark"
+            };
+            command.Parameters.AddWithValue("@idremark", ID_REMARK_UPLINE);
+            using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    return dt.AsEnumerable<UserInfo>().FirstOrDefault();
+                }
+                else
+                    return null;
+            }
+        }
+
+
         public async ValueTask<List<TBT_SALE_STATUS>> GET_TBT_SALE_STATUS(int company_id)
         {
             SqlCommand command = new SqlCommand
@@ -502,8 +530,10 @@ WHERE ID =@ID "
             sql.Parameters.AddWithValue("@mobile", string.IsNullOrEmpty( condition.mobile)? (object)DBNull.Value :condition.mobile);
             sql.Parameters.AddWithValue("@ModelType", string.IsNullOrEmpty( condition.modelType)? (object)DBNull.Value :condition.modelType);
             sql.Parameters.AddWithValue("@people", string.IsNullOrEmpty( condition.People)? (object)DBNull.Value :condition.People);
-            sql.Parameters.AddWithValue("@DealCreate", string.IsNullOrEmpty( condition.Dealcreationdate)? (object)DBNull.Value :condition.Dealcreationdate);
-            sql.Parameters.AddWithValue("@DealDateFollowup", string.IsNullOrEmpty( condition.Duedatefollowup) ? (object)DBNull.Value :condition.Duedatefollowup);
+            sql.Parameters.AddWithValue("@DealCreate", string.IsNullOrEmpty( condition.Dealcreationdate)? (object)DBNull.Value : DateTime.ParseExact(condition.Dealcreationdate, "dd/MM/yyyy",
+                                       System.Globalization.CultureInfo.InvariantCulture));
+            sql.Parameters.AddWithValue("@DealDateFollowup", string.IsNullOrEmpty( condition.Duedatefollowup) ? (object)DBNull.Value : DateTime.ParseExact(condition.Duedatefollowup, "dd/MM/yyyy",
+                                       System.Globalization.CultureInfo.InvariantCulture) );
             sql.Parameters.AddWithValue("@DealValue", string.IsNullOrEmpty( condition.Dealvalue) ? (object)DBNull.Value :condition.Dealvalue);
             sql.Parameters.AddWithValue("@ID", condition.company_id);
 

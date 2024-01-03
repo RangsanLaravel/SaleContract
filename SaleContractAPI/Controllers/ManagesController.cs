@@ -118,7 +118,7 @@ namespace SaleContractAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest($"{ex.Message}::${ex.StackTrace}");
             }
         }
 
@@ -129,8 +129,9 @@ namespace SaleContractAPI.Controllers
             {
                 var _userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
                 condition.REMARK_ID = _userid;
-                await this.service.INSERT_TBT_REAMRK_STATUS(condition);
-                return Ok();
+                var userinfo =  await this.service.INSERT_TBT_REAMRK_STATUS(condition);
+                
+                return Ok(userinfo);
             }
             catch (Exception ex)
             {

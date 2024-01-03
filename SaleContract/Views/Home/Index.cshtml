@@ -118,12 +118,7 @@
                             <input type="number" name="edDealvalue" class="form-control" id="edDealvalue" />
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-4">
-                            <label for="edPersen" class="form-label">Persen</label>
-                            <input type="number" id="edPersen" class="form-control" name="edPersen" disabled>
-                        </div>
-                    </div>
+                     <input type="number" id="edPersen" class="form-control" name="edPersen" hidden>
                     <div class="row">
                         <div class="col-12">
                             <label for="remark" class="form-label">Remark</label>
@@ -132,20 +127,10 @@
                     </div>                  
                 }else
                 {
-                    <div class="row">
-                        <div class="col-4">
-                            <label for="edName" class="form-label">Name </label>
-                            <input type="text" name="edName" id="edName" class="form-control" disabled />
-                        </div>
-                        <div class="col-4">
-                            <label for="edwebsite" class="form-label">Website </label>
-                            <input type="text" name="edwebsite" id="edwebsite" class="form-control" disabled />
-                        </div>
-                        <div class="col-4">
-                            <label for="edContact" class="form-label">Contact </label>
-                            <input type="text" name="edContact" id="edContact" class="form-control" />
-                        </div>
-                    </div>
+                    <input type="text" name="edName" id="edName" class="form-control" hidden />
+                    <input type="text" name="edwebsite" id="edwebsite" class="form-control" hidden />
+                    <input type="text" name="edPosition" id="edPosition" class="form-control" hidden />
+
                     <div class="row">
                         <input id="companyid" hidden />
                         <div class="col-4">
@@ -182,8 +167,8 @@
                     </div>
                     <div class="row">
                         <div class="col-4">
-                            <label for="edPosition" class="form-label">Position </label>
-                            <input type="text" name="edPosition" id="edPosition" class="form-control" disabled />
+                            <label for="edContact" class="form-label">Contact </label>
+                            <input type="text" name="edContact" id="edContact" class="form-control" />
                         </div>
                         <div class="col-4">
                             <label for="edEmail" class="form-label">Email </label>
@@ -224,7 +209,7 @@
                     </div>
                     <div class="row">
                         <div class="col-4">
-                            <label for="edPersen" class="form-label">Persen</label>
+                            <label for="edPersen" class="form-label">Percen</label>
                             <input type="number" id="edPersen" class="form-control" name="edPersen">
                         </div>                       
                     </div>
@@ -345,7 +330,7 @@
 
 <div class="row">
         <table id="datarender" class="table table-striped nowrap" style="width:100%">
-            <thead>
+        <thead class="table-dark">
                 <tr>
                 <th>#</th>
                 <th scope="col">Order</th>
@@ -364,7 +349,7 @@
                 <th scope="col">Due date follow up </th>
                 <th scope="col">DealDateNoti</th>
                 <th scope="col">Deal value </th>
-                <th scope="col">% Persen </th>
+                <th scope="col">% Percen </th>
                 <th scope="col">Won</th>
                 <th scope="col">Last Updated</th>
                 </tr>
@@ -497,7 +482,7 @@
                                  }
                                 render += `
                                 <li>
-                                   <div class="frame">
+                                   <div class="frame-main">
                                               <p><strong class="label">change to ::</strong>${response.data[i].status_description}</p>
                                                       <p><strong class="label">change date ::</strong>${formatedate(response.data[i].fsystem_dt)}</p>
                                                       <p><strong class="label">change by ::</strong>${response.data[i].fsystem_id}</p>
