@@ -1,7 +1,7 @@
 ﻿<form id="frmsearch" asp-action="Index" asp-controller="Home" asp-antiforgery="true">
     <div class="row">
         <div class="row">
-            <div class="mb-3 col-4">
+            <div class="mb-3 col-6">
                 <label for="ddpPriority" class="form-label">Priority</label>
                 <select id="ddpPriority" name="Priority" class="form-select form-select-sm" aria-label=".form-select-sm example">
                     <option value="" selected>- ทั้งหมด -</option>
@@ -15,7 +15,7 @@
                     }
                 </select>
             </div>
-            <div class="mb-3 col-4">
+            <div class="mb-3 col-6">
                 <label for="ddpStatus" class="form-label">Status</label>
                 <select id="ddpStatus" name="status" class="form-select form-select-sm" aria-label=".form-select-sm example">
                     <option value="" selected>- ทั้งหมด -</option>
@@ -28,25 +28,27 @@
                         }
                     }
                 </select>
-            </div>
-            <div class="mb-3 col-4">
+            </div>          
+        </div>
+        <div class="row">
+            <div class="mb-3 col-6">
                 <label for="txtName" class="form-label">Name</label>
                 <input type="text" name="NAME" class="form-control" id="txtName" placeholder="Name">
             </div>
-        </div>
-        <div class="row">
-            <div class="mb-3 col-4">
-                <label for="txtRemark" class="form-label">Remark</label>
-                <input type="text" name="Remark" class="form-control" id="txtRemark" placeholder="Remark">
-            </div>
-            <div class="mb-3 col-4">
+            <div class="mb-3 col-6">
                 <label for="txtContract" class="form-label">Contract</label>
                 <input type="text" name="Contract" class="form-control" id="txtContract" placeholder="Contract">
             </div>
-            <div class="mb-3 col-4">
+        </div>
+        <div class="row">
+            <div class="mb-3 col-6">
                 <label for="txtModeltype" class="form-label">ModelType</label>
                 <input type="text" name="ModelType" class="form-control" id="txtModeltype" placeholder="ModelType">
             </div>
+            <div class="mb-3 col-6">
+                <label for="txtRemark" class="form-label">Remark</label>
+                <input type="text" name="Remark" class="form-control" id="txtRemark" placeholder="Remark">
+            </div>          
         </div>
         <div class="mb-3 d-flex justify-content-center">
             <button type="submit" class="btn btn-primary btn-sm m-3">Search</button>
