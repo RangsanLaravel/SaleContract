@@ -22,8 +22,8 @@ namespace SaleContract.Controllers
         }
         public IActionResult Index(SEARCH_COMPANY condition)
         {
-            if (HttpContext.Session.GetString("token") is null)
-                return RedirectToAction("Logout");
+            //if (HttpContext.Session.GetString("token") is null)
+            //    return RedirectToAction("Logout");
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
             RestRequest request = new RestRequest($"api/v1/Manages/GET_COMPANY", Method.Post);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
@@ -55,6 +55,9 @@ namespace SaleContract.Controllers
                 condition.Priority = condition.Priority ?? string.Empty;
                 condition.MOBILE = condition.MOBILE ?? string.Empty;
                 condition.EMAIL = condition.EMAIL ?? string.Empty;
+                condition.Contract = condition.Contract ?? string.Empty;
+                condition.Remark = condition.Remark ?? string.Empty;
+                condition.ModelType = condition.ModelType ?? string.Empty;
                 condition.limit = condition.limit ?? "100";
                 condition.ID = string.Empty;
                 condition.Owner = string.Empty;

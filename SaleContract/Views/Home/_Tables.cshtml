@@ -1,0 +1,67 @@
+﻿<div class="row">
+    <table id="datarender" class="table table-striped nowrap" style="width:100%">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th scope="col">Order</th>
+                <th scope="col">Name</th>
+                <th scope="col">Website </th>
+                <th scope="col">Contract </th>
+                <th scope="col">Position </th>
+                <th scope="col">Email </th>
+                <th scope="col">Mobile </th>
+                <th scope="col">Owner </th>
+                <th scope="col">Model Types </th>
+                <th scope="col">People </th>
+                <th scope="col">Status </th>
+                <th scope="col">Priority </th>
+                <th scope="col">Deal creation date </th>
+                <th scope="col">Due date follow up </th>
+                <th scope="col">DealDateNoti</th>
+                <th scope="col">Deal value </th>
+                <th scope="col">% Percen </th>
+                <th scope="col">Won</th>
+                <th scope="col">Last Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                for (int i = 0; i < Model.Count; i++)
+                {
+                    <tr>
+                        <th><a href="#" onclick="showtimeline('@Model[i].ID','@Model[i].NAME')"><i class="bi bi-plus-square-fill" style="font-size:15px"></i></a></th>
+                        <th ondblclick="showedit('@i')" scope="row">@(i + 1)</th>
+                        <td ondblclick="showedit('@i')">@Model[i].NAME </td>
+                        <td ondblclick="showedit('@i')">@Model[i].WEBSITE </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Contract </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Position </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Email </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Mobile </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Owner </td>
+                        <td ondblclick="showedit('@i')">@Model[i].ModelType </td>
+                        <td ondblclick="showedit('@i')">@Model[i].People </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Status</td>
+                        <td ondblclick="showedit('@i')">@Model[i].Priority_description </td>
+                        <td ondblclick="showedit('@i')">@Model[i].DealCreate </td>
+                        <td ondblclick="showedit('@i')">@Model[i].DealDateFollowup </td>
+                        <td ondblclick="showedit('@i')">@Model[i].DealDateNoti </td>
+                        <td ondblclick="showedit('@i')">@Model[i].DealValue </td>
+                        <td ondblclick="showedit('@i')">100 </td>
+                        @{
+                            var deal = !string.IsNullOrEmpty(Model[i].DealValue) ? Convert.ToInt32(Model[i].DealValue) : 0;
+                            var percen = !string.IsNullOrEmpty(Model[i].Persen) ? Convert.ToInt32(Model[i].Persen) : 0;
+                            var won = (deal * percen) / 100;
+                            <td ondblclick="showedit('@i')">@won</td>
+                        }
+                        <td ondblclick="showedit('@i')">@Model[i].LastUpdate</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>ไม่พบข้อมูล</tr>
+            }
+        </tbody>
+    </table>
+</div>

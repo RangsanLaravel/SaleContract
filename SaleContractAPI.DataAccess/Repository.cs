@@ -210,6 +210,8 @@ ORDER BY tbtst.FSYSTEM_DT ASC"
   AND (@Priority IS NULL OR PRIORITY =@Priority)
   AND (@Status IS NULL OR Status =@Status)
   AND (@DealDateFollowup IS NULL OR DealDateFollowup=@DealDateFollowup)
+  AND (@Contract IS NULL OR Contract =@Contract)
+  AND (@ModelType IS NULL OR ModelType =@ModelType)
    "
             };
             command.Parameters.AddWithValue("@name", string.IsNullOrWhiteSpace(condition.NAME) ? (object)DBNull.Value : condition.NAME);
@@ -220,6 +222,8 @@ ORDER BY tbtst.FSYSTEM_DT ASC"
             command.Parameters.AddWithValue("@Priority", string.IsNullOrWhiteSpace(condition.Priority)? (object)DBNull.Value:condition.Priority);
             command.Parameters.AddWithValue("@Status", string.IsNullOrWhiteSpace(condition.Status)? (object)DBNull.Value:condition.Status);
             command.Parameters.AddWithValue("@DealDateFollowup", string.IsNullOrWhiteSpace(condition.DealDateFollowup)? (object)DBNull.Value:condition.DealDateFollowup);
+            command.Parameters.AddWithValue("@Contract", string.IsNullOrWhiteSpace(condition.Contract)? (object)DBNull.Value:condition.Contract);
+            command.Parameters.AddWithValue("@ModelType", string.IsNullOrWhiteSpace(condition.ModelType)? (object)DBNull.Value:condition.ModelType);
 
 
             using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(command))
@@ -581,7 +585,7 @@ WHERE ID =@ID "
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
                 CommandText = $@"UPDATE [{DBENV}].[dbo].[tbt_company_detail]
-SET WON =GETDATE()
+SET WON = (DealValue*Persen)/100
 WHERE ID =@ID "
             };
  

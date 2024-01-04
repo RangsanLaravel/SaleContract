@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace SaleContractAPI.DataContract
@@ -23,9 +24,10 @@ namespace SaleContractAPI.DataContract
         public DateTime? DealDateFollowup { get; set; }
         public DateTime? DealDateNoti { get; set; }
         public string DealValue { get; set; }
+        [DisplayName("Percen")]
         public string Persen { get; set; }
         public string location { get; set; }
-        public DateTime? Won { get; set; }
+        public string Won { get; set; }
         public DateTime? LastUpdate { get; set; }
     }
 }
