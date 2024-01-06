@@ -47,10 +47,10 @@
                         <td ondblclick="showedit('@i')">@Model[i].DealDateFollowup </td>
                         <td ondblclick="showedit('@i')">@Model[i].DealDateNoti </td>
                         <td ondblclick="showedit('@i')">@Model[i].DealValue </td>
-                        <td ondblclick="showedit('@i')">100 </td>
+                        <td ondblclick="showedit('@i')">@Model[i].Persen </td>
                         @{
-                            var deal = !string.IsNullOrEmpty(Model[i].DealValue) ? Convert.ToInt32(Model[i].DealValue) : 0;
-                            var percen = !string.IsNullOrEmpty(Model[i].Persen) ? Convert.ToInt32(Model[i].Persen) : 0;
+                            var deal = !string.IsNullOrEmpty(Model[i].DealValue) ? Convert.ToInt64(Model[i].DealValue) : 0;
+                            var percen = !string.IsNullOrEmpty(Model[i].Persen) ? Convert.ToInt64(Model[i].Persen) : 0;
                             var won = (deal * percen) / 100;
                             <td ondblclick="showedit('@i')">@won</td>
                         }
