@@ -141,13 +141,13 @@ namespace SaleContractAPI.BusinessLogic
                     {
                         item.Status = status.LastOrDefault().status_description;
                     }
-                    if (!string.IsNullOrEmpty(item.DealValue))
-                    {
+                    //if (!string.IsNullOrEmpty(item.DealValue))
+                    //{
 
-                        item.Persen =(Convert.ToInt32(item.DealValue)* Convert.ToInt32(string.IsNullOrEmpty(item.Persen)?0:Convert.ToInt32(item.Persen) ) /100).ToString();
-                    }
-                    else
-                        item.Persen = "0";
+                    //    item.Persen = (Convert.ToInt32(item.DealValue) * Convert.ToInt32(string.IsNullOrEmpty(item.Persen) ? 0 : Convert.ToInt32(item.Persen)) / 100).ToString();
+                    //}
+                    //else
+                    //    item.Persen = "0";
                 }
             }
             catch (Exception ex)
