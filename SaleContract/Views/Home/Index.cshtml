@@ -40,6 +40,16 @@
             form.reset();
         }
 
+        $(document).keydown(function (e) {
+            // ตรวจสอบว่าปุ่มที่ถูกกดคือ ESC
+            if (e.which === 27) {
+                // เรียกฟังก์ชัน JavaScript ที่คุณต้องการ
+                closetimeline();
+            }
+        });
+        const closetimeline =()=>{
+            $('#cmpcls').click()
+        }
         const showedit = (i) => {
             
             $('#companyid').val(companydetail[i].id)
@@ -56,13 +66,16 @@
             $('#edDealvalue').val(companydetail[i].dealValue)
             $('#edPersen').val(companydetail[i].persen )
             $('#edDealcreationdate').datepicker({
-                uiLibrary: 'bootstrap5'
+                uiLibrary: 'bootstrap5',
+                format: 'dd/mm/yyyy'
             });
             $('#edDuedatefollowup').datepicker({
-                uiLibrary: 'bootstrap5'
+                uiLibrary: 'bootstrap5',
+                format: 'dd/mm/yyyy'
             });
             $('#ednoti').datepicker({
-                uiLibrary: 'bootstrap5'
+                uiLibrary: 'bootstrap5',
+                format: 'dd/mm/yyyy'
             });
             if (companydetail[i].dealCreate) {                          
                 $('#edDealcreationdate').val(getdate(companydetail[i].dealCreate))
@@ -80,6 +93,8 @@
         const showtimeline = (id,name) => {
             $('#companyidstatus').text(`สถานะบริษัท:${name}`)
             $('#renderiframe').html('')
+            $('#cmpid').val(id)
+            $('#cmpname').val(name)
             $.ajax({
                 url: `@Url.Action("GET_TIMELINE","Home")?companyid=${id}`,
                 type: 'GET',
@@ -127,6 +142,79 @@
                             $('#showtimeline').click()
 
 
+                        } else {
+                            Swal.fire({
+                                icon: "waring",
+                                title: "Oops...",
+                                text: 'ไม่พบข้อมูล'
+                            });
+                        }
+
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: response.error
+                        });
+                    }
+
+                },
+                error: function () {
+
+                }
+            });
+
+        }
+
+        const refreshtimeline = (id, name) => {
+            $('#companyidstatus').text(`สถานะบริษัท:${name}`)
+            $('#renderiframe').html('')
+            $('#cmpid').val(id)
+            $('#cmpname').val(name)
+            $.ajax({
+                url: `@Url.Action("GET_TIMELINE","Home")?companyid=${id}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response)
+                    if (response.success) {
+                        if (response.data) {
+                            let render = ''
+
+                            console.log(response.data)
+                            for (let i = 0; i < response.data.length; i++) {
+                                let rederreply = ''
+                                let tmpchkdup = '';
+                                let mrg = 50;
+                                if (response.data[i].remark_Statuses) {
+                                    console.log(response.data[i].remark_Statuses)
+                                    for (let j = 0; j < response.data[i].remark_Statuses.length; j++) {
+                                        rederreply += `<div style="margin-left:${mrg}px;" class="frame">
+                                                                                      <p><span class="label">Remark ::</span>${response.data[i].remark_Statuses[j].remark}</p>
+                                                                                                      <p><span class="label">Remark by ::</span>${response.data[i].remark_Statuses[j].remarK_ID}</p>
+                                                                                              <p><span class="label">Remark date ::</span>${response.data[i].remark_Statuses[j].remarK_DT}</p>
+                                                                               <a href="#" class="reply-link" onclick="showremark('${response.data[i].remark_Statuses[j].id}')">reply</a>
+                                                    </div>`;
+                                        if (tmpchkdup != response.data[i].remark_Statuses[j].ID_REMARK_UPLINE) {
+                                            mrg = mrg + 10;
+                                        }
+                                        tmpchkdup = response.data[i].remark_Statuses[j].ID_REMARK_UPLINE;
+                                    }
+                                }
+                                render += `
+                                        <li>
+                                           <div class="frame-main">
+                                                      <p><strong class="label">change to ::</strong>${response.data[i].status_description}</p>
+                                                              <p><strong class="label">change date ::</strong>${formatedate(response.data[i].fsystem_dt)}</p>
+                                                              <p><strong class="label">change by ::</strong>${response.data[i].fsystem_id}</p>
+                                                              <p><strong class="label">due date ::</strong>${formatedate(response.data[i].due_dt)}</p>
+                                                      <a href="#" class="reply-link" onclick="showremark('${response.data[i].id}')">reply</a>
+                                           </div>
+                                                   ${rederreply}
+                                        </li>
+                                      `
+                            }
+                            $('#renderiframe').append(render)
                         } else {
                             Swal.fire({
                                 icon: "waring",
@@ -226,6 +314,9 @@
                                 Swal.fire("Saved!", "", "success");
                         $('#remarkreply').val('')
                         $('#clsreply').click()
+                        let cmpid = $('#cmpid').val()
+                        let cmpname = $('#cmpname').val()
+                        refreshtimeline(cmpid, cmpname)
                     } else {
                                 Swal.fire({
                                     icon: "error",
@@ -249,5 +340,7 @@
             // จัดรูปแบบวันที่และเวลา
             return `${dateObject.getMonth() + 1}/${dateObject.getDate()}/${dateObject.getFullYear()} ${dateObject.toLocaleTimeString()}`;
         }
+
+       
     </script>
 }

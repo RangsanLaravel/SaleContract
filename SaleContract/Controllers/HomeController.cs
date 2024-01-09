@@ -230,9 +230,20 @@ namespace SaleContract.Controllers
             data.REMARK_DT = string.Empty;
             data.ID = string.Empty;
             request.AddJsonBody(data);
-            var response = client.Execute(request);
+            var response = client.Execute<UserInfo>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
+                if (!string.IsNullOrEmpty(response?.Data?.email))
+                {
+                    email_service email = new email_service
+                    {
+                        email = response.Data.email,
+                        subject = $"Message From {response.Data.fullname}",
+                        body = $"Message From {response.Data.fullname} Check in Remark"
+                    };
+
+                    SendEmail(email);
+                }
                 return Json(new { success = true });
             }
             return Json(new { success = false, error = response.Content });
@@ -288,8 +299,8 @@ namespace SaleContract.Controllers
 
         private async ValueTask SendEmail(email_service email)
         {
-            RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
-            RestRequest request = new RestRequest($"/api/v1/Manages/INSERT_TBT_SALE_STATUS", Method.Post);
+            RestClient client = new RestClient(_configuration["API:ISEESERVICE"]);
+            RestRequest request = new RestRequest($"/api/v1/ISEEServices/SendEmail", Method.Post);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
             request.AddJsonBody(email);
             var response = client.Execute(request);

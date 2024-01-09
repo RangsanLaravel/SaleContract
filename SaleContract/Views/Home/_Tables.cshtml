@@ -42,7 +42,18 @@
                         <td ondblclick="showedit('@i')">@Model[i].ModelType </td>
                         <td ondblclick="showedit('@i')">@Model[i].People </td>
                         <td ondblclick="showedit('@i')">@Model[i].Status</td>
-                        <td ondblclick="showedit('@i')">@Model[i].Priority_description </td>
+                        @if (Model[i].Priority_description == "High")
+                        {
+                            <td ondblclick="showedit('@i')" style="background-color: rgba(255, 0, 24, 0.5);">@Model[i].Priority_description </td>
+                        }
+                        else if (Model[i].Priority_description == "Medium")
+                        {
+                            <td ondblclick="showedit('@i')" style="background-color:rgba(255, 99, 71, 0.6);">@Model[i].Priority_description </td>
+                        }
+                        else
+                        {
+                            <td ondblclick="showedit('@i')">@Model[i].Priority_description </td>
+                        }
                         <td ondblclick="showedit('@i')">@Model[i].DealCreate </td>
                         <td ondblclick="showedit('@i')">@Model[i].DealDateFollowup </td>
                         <td ondblclick="showedit('@i')">@Model[i].DealDateNoti </td>
