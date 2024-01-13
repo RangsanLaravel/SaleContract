@@ -216,7 +216,7 @@ namespace SaleContract.Controllers
            
         }
 
-        [HttpPost]
+        [HttpPost("INSERT_REMARK_REPLY")]
         public IActionResult INSERT_REMARK_REPLY(tbt_remark_status data)
         {
             if (HttpContext.Session.GetString("token") is null)
@@ -235,11 +235,16 @@ namespace SaleContract.Controllers
             {
                 if (!string.IsNullOrEmpty(response?.Data?.email))
                 {
+                    var emaildt = GET_EMAILDETAIL(Convert.ToInt64( data.ID_REMARK_UPLINE));
                     email_service email = new email_service
                     {
                         email = response.Data.email,
                         subject = $"Message From {response.Data.fullname}",
-                        body = $"Message From {response.Data.fullname} Check in Remark"
+                        body = $@"<span>ลูกค้า:{emaildt.customername}</span>
+                                  <span>Status:{emaildt.status}</span>
+                                  <span>Remark:-</span>
+                                  <span>Reply:{data.REMARK}</span>
+                                "
                     };
 
                     SendEmail(email);
@@ -308,6 +313,19 @@ namespace SaleContract.Controllers
             {
                 var a = 1;
             }
+        }
+
+        private email_detail GET_EMAILDETAIL(long UPLINEID)
+        {
+            RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
+            RestRequest request = new RestRequest($"/api/v1/GET_EMAILDETAIL/{UPLINEID}", Method.Get);
+            request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
+            var response = client.Execute<email_detail>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return response.Data;
+            }
+            return null;
         }
     }
 }

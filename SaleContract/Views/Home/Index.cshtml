@@ -302,7 +302,7 @@
         }
         const SaveRemark=()=>{
             $.ajax({
-                        url: '@Url.Action("INSERT_REMARK_REPLY", "Home")',
+                        url: `@Url.Action("INSERT_REMARK_REPLY", "Home")`,
                         type: 'POST',
                         dataType: 'json',
                         data: {

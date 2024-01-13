@@ -139,6 +139,21 @@ namespace SaleContractAPI.Controllers
             }
         }
 
+        [HttpGet("GET_EMAILDETAIL/{UPLINEID}")]
+        public async ValueTask<IActionResult> GET_EMAILDETAIL(long UPLINEID)
+        {
+            try
+            {
+            var result=    await this.service.GET_EMAILDETAIL(UPLINEID);
+                if(result is null)
+                    return Ok();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpGet("ACCAPT/{ID}")]
         public async ValueTask<IActionResult> ACCAPT_NOTIFICATION(string ID)

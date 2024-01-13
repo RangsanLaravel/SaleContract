@@ -80,6 +80,40 @@ namespace SaleContractAPI.DataAccess
 
         }
 
+        public async ValueTask<email_detail> GET_STATUS_BY_ID(string ID)
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = $@"SELECT [ID]
+      ,(select NAME from [{DBENV}].dbo.[tbt_company_detail] WHERE ID =company_id AND TMN_FLG ='N')AS customername
+      ,(SELECT STATUS_DESCRIPTION FROM [{DBENV}].dbo.[tbm_substatus] WHERE ACTIVE_FLG =1 AND STATUS_TYPE='SALE' AND STATUS_CODE=d.STATUS_CODE ) AS status
+      ,[fsystem_id]
+      ,[fsystem_dt]
+      ,[tmn_flg]
+      ,[tmn_dt]
+      ,[remark]
+  FROM [{DBENV}].dbo.[tbt_sale_status] d
+  WHERE ID =@ID
+  AND TMN_FLG ='N'"
+            };
+            sql.Parameters.AddWithValue("@ID", ID);
+
+            using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(sql))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    return dt.AsEnumerable<email_detail>().First();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+        }
+
         public async ValueTask<List<Priority>> GET_PRIORITY()
         {
             SqlCommand command = new SqlCommand
@@ -116,8 +150,8 @@ ORDER BY Priority_SEQ ASC"
                 Transaction = this.transaction,
                 CommandText = $@"SELECT
       em.*
-  FROM [ISEE_DEV3].[dbo].[tbm_employee] em
-  INNER JOIN [ISEE_DEV3].[dbo].[tbt_remark_status] st on st.remark_id =em.user_id
+  FROM [{DBENV}].dbo.[tbm_employee] em
+  INNER JOIN [{DBENV}].dbo.[tbt_remark_status] st on st.remark_id =em.user_id
   WHERE em.status =1
   AND st.TMN_FLG ='N'
   AND st.ID =@idremark"
@@ -323,6 +357,37 @@ ORDER BY REMARK_DT ASC"
                 if (dt.Rows.Count > 0)
                 {
                     return dt.AsEnumerable<tbt_remark_status>().ToList();
+                }
+                else
+                    return null;
+            }
+        }
+
+        public async ValueTask<tbt_remark_status> GET_IDSTATUS(long UPLINEID)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = $@"SELECT  [ID]
+      ,[ID_STATUS_SALE]
+      ,[REMARK]
+      ,[REMARK_DT]
+      ,[REMARK_ID]
+      ,[ID_REMARK_UPLINE]
+      ,[TMN_FLG]
+  FROM [{DBENV}].[dbo].[tbt_remark_status]
+WHERE TMN_FLG='N'
+AND ID =@ID_REMARK_UPLINE
+ORDER BY ID DESC"
+            };
+            command.Parameters.AddWithValue("@ID_REMARK_UPLINE", UPLINEID);
+
+            using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    return dt.AsEnumerable<tbt_remark_status>().First();
                 }
                 else
                     return null;

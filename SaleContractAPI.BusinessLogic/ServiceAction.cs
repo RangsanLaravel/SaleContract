@@ -162,6 +162,38 @@ namespace SaleContractAPI.BusinessLogic
             return dataObjects;
         }
 
+        public async ValueTask<email_detail> GET_EMAILDETAIL(long UPLINEID)
+        {
+            email_detail dataObjects = null;
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                getagain:
+                var rmk = await repository.GET_IDSTATUS(UPLINEID);
+                if(rmk?.ID_STATUS_SALE != null)
+                {
+                    dataObjects = new email_detail();
+                    dataObjects = await repository.GET_STATUS_BY_ID(rmk.ID_STATUS_SALE);
+                }
+                else
+                {
+                    UPLINEID =Convert.ToInt64(rmk.ID_REMARK_UPLINE);
+                    goto getagain;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
+
         #endregion " GET "
 
 
