@@ -284,7 +284,8 @@ ORDER BY tbtst.FSYSTEM_DT ASC"
       ,[REMARK_DT]
       ,(select CONCAT(fullname,' ',lastname)  FROM [{DBENV}].[dbo].[tbm_employee] where user_id = REMARK_ID AND status =1) REMARK_ID
       ,[ID_REMARK_UPLINE]
-      ,[TMN_FLG]     
+      ,[TMN_FLG]  
+,ord_group
 FROM [{DBENV}].dbo.tbt_remark_status 
 WHERE TMN_FLG ='N' 
 AND ID_STATUS_SALE=@ID_STATUS_SALE
@@ -307,50 +308,11 @@ ORDER BY ID_REMARK_UPLINE ASC"
         {
             SqlCommand command = new SqlCommand
             {
-                CommandType = System.Data.CommandType.Text,
+                CommandType = System.Data.CommandType.StoredProcedure,
                 Connection = this.sqlConnection,
-                CommandText = $@"
-
-
-WITH RecursiveCTE AS (
-    -- Anchor member
-    SELECT
-        ID,
-		ID_STATUS_SALE,
-		REMARK,
-		REMARK_DT,
-		(select CONCAT(fullname,' ',lastname)  FROM [{DBENV}].[dbo].[tbm_employee] where user_id = REMARK_ID AND status =1) REMARK_ID,
-		ID_REMARK_UPLINE
-    FROM
-        [{DBENV}].[dbo].tbt_remark_status
-    WHERE
-        ID_STATUS_SALE IS NULL
-		AND TMN_FLG ='N'
-		AND ID_REMARK_UPLINE=@ID_REMARK_UPLINE
-
-    UNION ALL
-
-    -- Recursive member
-    SELECT
-		e.ID,
-		e.ID_STATUS_SALE,
-		e.REMARK,
-		e.REMARK_DT,
-		(select CONCAT(fullname,' ',lastname)  FROM [{DBENV}].[dbo].[tbm_employee] where user_id = e.REMARK_ID AND status =1) REMARK_ID,
-		e.ID_REMARK_UPLINE
-    FROM
-        [{DBENV}].[dbo].tbt_remark_status e
-    INNER JOIN
-        RecursiveCTE r ON e.ID_REMARK_UPLINE = r.ID
-	WHERE  TMN_FLG ='N'
-)
-SELECT
-    *
-FROM
-    RecursiveCTE
-ORDER BY REMARK_DT ASC"
+                CommandText = @$"[{DBENV}].[dbo].[sp_get_remark_status]",
             };
-            command.Parameters.AddWithValue("@ID_REMARK_UPLINE", IDREMARK);
+            command.Parameters.AddWithValue("@ID", IDREMARK);
 
             using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(command))
             {
@@ -369,6 +331,37 @@ ORDER BY REMARK_DT ASC"
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
+                CommandText = $@"SELECT  [ID]
+      ,[ID_STATUS_SALE]
+      ,[REMARK]
+      ,[REMARK_DT]
+      ,[REMARK_ID]
+      ,[ID_REMARK_UPLINE]
+      ,[TMN_FLG]
+  FROM [{DBENV}].[dbo].[tbt_remark_status]
+WHERE TMN_FLG='N'
+AND ID =@ID_REMARK_UPLINE
+ORDER BY ID DESC"
+            };
+            command.Parameters.AddWithValue("@ID_REMARK_UPLINE", UPLINEID);
+
+            using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    return dt.AsEnumerable<tbt_remark_status>().First();
+                }
+                else
+                    return null;
+            }
+        }
+        public async ValueTask<tbt_remark_status> CHECK_UPLINE_FOR_GORUP(long UPLINEID)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
                 CommandText = $@"SELECT  [ID]
       ,[ID_STATUS_SALE]
       ,[REMARK]
@@ -529,7 +522,7 @@ ORDER BY ID DESC"
             await sql.ExecuteNonQueryAsync();
         }
 
-        public async ValueTask INSERT_TBT_REAMRK_STATUS(tbt_remark_status condition)
+        public async ValueTask<long> INSERT_TBT_REAMRK_STATUS(tbt_remark_status condition)
         {
             SqlCommand sql = new SqlCommand
             {
@@ -551,18 +544,39 @@ ORDER BY ID DESC"
            ,GETDATE()
            ,@REMARK_ID
            ,'N'
-           ,@ID_REMARK_UPLINE)"
+           ,@ID_REMARK_UPLINE);SELECT SCOPE_IDENTITY();"
             };
             sql.Parameters.AddWithValue("@ID_STATUS_SALE", string.IsNullOrEmpty(condition.ID_STATUS_SALE) ? (object)DBNull.Value: condition.ID_STATUS_SALE);
             sql.Parameters.AddWithValue("@REMARK", string.IsNullOrEmpty(condition.REMARK) ? (object)DBNull.Value : condition.REMARK);
             sql.Parameters.AddWithValue("@REMARK_ID", string.IsNullOrEmpty(condition.REMARK_ID) ? (object)DBNull.Value : condition.REMARK_ID);
             sql.Parameters.AddWithValue("@ID_REMARK_UPLINE", string.IsNullOrEmpty(condition.ID_REMARK_UPLINE) ? (object)DBNull.Value : condition.ID_REMARK_UPLINE);
 
-            await sql.ExecuteNonQueryAsync();
+            var insertedId = await sql.ExecuteScalarAsync();
+
+            // แปลงค่าที่รีเทิร์นมาเป็น int (หรือตามประเภทของ ID ของคุณ)
+            return Convert.ToInt64(insertedId);
         }
         #endregion " INSERT "
 
         #region " UPDATE "
+
+        public async ValueTask UPDATE_TBT_REAMRK_STATUS_GROUP(long group,long id)
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbt_remark_status]
+SET ORD_GROUP =@ord_group
+WHERE TMN_FLG ='N'
+AND id =@id
+            "
+            };
+            sql.Parameters.AddWithValue("@ord_group", group);
+            sql.Parameters.AddWithValue("@id", id);
+            await sql.ExecuteNonQueryAsync();
+        }
         public async ValueTask UPDATE_TBT_COMPANY(TBT_SALE_STATUS condition)
         {
             SqlCommand sql = new SqlCommand

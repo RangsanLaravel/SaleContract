@@ -13,5 +13,6 @@ namespace SaleContractAPI.DataContract
             public string REMARK_ID{ get; set; } 
             public string TMN_FLG{ get; set; } 
             public string ID_REMARK_UPLINE{ get; set; } 
+            public string ord_group { get; set; }
     }
 }

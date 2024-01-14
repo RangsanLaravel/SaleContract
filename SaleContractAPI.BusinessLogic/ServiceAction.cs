@@ -235,7 +235,17 @@ namespace SaleContractAPI.BusinessLogic
             await repository.beginTransection();
             try
             {
-                await repository.INSERT_TBT_REAMRK_STATUS(condition);
+                
+                var rmkup =   await repository.INSERT_TBT_REAMRK_STATUS(condition);
+                var rmk = await repository.CHECK_UPLINE_FOR_GORUP(Convert.ToInt64(condition.ID_REMARK_UPLINE));
+                if (rmk != null && !string.IsNullOrEmpty( rmk.ID_STATUS_SALE))
+                {
+                    await repository.UPDATE_TBT_REAMRK_STATUS_GROUP(rmkup,rmkup);
+                }
+                else
+                {
+                    await repository.UPDATE_TBT_REAMRK_STATUS_GROUP (Convert.ToInt64(condition.ord_group), rmkup);
+                }
                 var userinfo = await repository.GET_EMAIL(condition.ID_REMARK_UPLINE);
                 await repository.CommitTransection();
                 return userinfo;
@@ -267,7 +277,8 @@ namespace SaleContractAPI.BusinessLogic
                         REMARK_ID =condition.fsystem_id,
                         REMARK = condition.remark
                     };
-                    await repository.INSERT_TBT_REAMRK_STATUS(remrk);
+                   var uplineid =   await repository.INSERT_TBT_REAMRK_STATUS(remrk);
+                    await repository.UPDATE_TBT_REAMRK_STATUS_GROUP(uplineid, uplineid);
                 }
                 if (condition.status_code == "WON")
                 {
