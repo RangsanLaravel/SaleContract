@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SaleContractAPI.BusinessLogic;
 using SaleContractAPI.DataContract;
+using System.Security.Claims;
 
 namespace SaleContractAPI.Controllers
 {
@@ -76,6 +77,16 @@ namespace SaleContractAPI.Controllers
         {
             try
             {
+                var _userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                var _position = User.Claims.Where(a => a.Type == ClaimTypes.Role).Select(a => a.Value).FirstOrDefault();
+                if (_position == "CK")
+                {
+                    condition.Owner = string.Empty;
+                }
+                else
+                {
+                    condition.Owner = _userid;
+                }
                 var result = await this.service.GET_COMPANY(condition);
                 if (result is null)
                     return Ok();

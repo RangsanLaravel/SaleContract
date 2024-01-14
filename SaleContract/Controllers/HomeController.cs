@@ -22,8 +22,8 @@ namespace SaleContract.Controllers
         }
         public IActionResult Index(SEARCH_COMPANY condition)
         {
-            //if (HttpContext.Session.GetString("token") is null)
-            //    return RedirectToAction("Logout");
+            if (HttpContext.Session.GetString("token") is null)
+                return RedirectToAction("Logout");
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
             RestRequest request = new RestRequest($"api/v1/Manages/GET_COMPANY", Method.Post);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
@@ -77,7 +77,9 @@ namespace SaleContract.Controllers
             // ViewBag.priority = HttpContext.Session.GetString("priority") == null ? null : JsonSerializer.Deserialize<List<Priority>>(HttpContext.Session.GetString("priority"));
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-               
+
+                ViewData["sumarypriority"] = @$"<p><strong>Hight : </strong>{(response?.Data == null ? 0 : response.Data.Where(a => a.Priority == "1")?.Count()
+                    )} <strong>Medium :</strong>{(response?.Data == null ? 0 : response.Data.Where(a => a.Priority == "2")?.Count())} <strong>Low :</strong>{(response?.Data == null ? 0 : response.Data.Where(a => a.Priority == "3")?.Count())} </p>";
                 return View(response?.Data);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
@@ -230,28 +232,36 @@ namespace SaleContract.Controllers
             data.REMARK_DT = string.Empty;
             data.ID = string.Empty;
             request.AddJsonBody(data);
-            var response = client.Execute<UserInfo>(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            try
             {
-                if (!string.IsNullOrEmpty(response?.Data?.email))
+                var response = client.Execute<UserInfo>(request);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    var emaildt = GET_EMAILDETAIL(Convert.ToInt64( data.ID_REMARK_UPLINE));
-                    email_service email = new email_service
+                    if (!string.IsNullOrEmpty(response?.Data?.email))
                     {
-                        email = response.Data.email,
-                        subject = $"Message From {response.Data.fullname}",
-                        body = $@"<span>ลูกค้า:{emaildt.customername}</span>
+                        var emaildt = GET_EMAILDETAIL(Convert.ToInt64(data.ID_REMARK_UPLINE));
+                        email_service email = new email_service
+                        {
+                            email = response.Data.email,
+                            subject = $"Message From {response.Data?.fullname}",
+                            body = $@"<span>ลูกค้า:{emaildt.customername}</span>
                                   <span>Status:{emaildt.status}</span>
                                   <span>Remark:-</span>
                                   <span>Reply:{data.REMARK}</span>
                                 "
-                    };
+                        };
 
-                    SendEmail(email);
+                        SendEmail(email);
+                    }
+                    return Json(new { success = true });
                 }
-                return Json(new { success = true });
+                return Json(new { success = false, error = response.Content });
             }
-            return Json(new { success = false, error = response.Content });
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+           
         }
         public IActionResult Create(company_detail company)
         {
@@ -318,7 +328,7 @@ namespace SaleContract.Controllers
         private email_detail GET_EMAILDETAIL(long UPLINEID)
         {
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
-            RestRequest request = new RestRequest($"/api/v1/GET_EMAILDETAIL/{UPLINEID}", Method.Get);
+            RestRequest request = new RestRequest($"/api/v1/Manages/GET_EMAILDETAIL/{UPLINEID}", Method.Get);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
             var response = client.Execute<email_detail>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)

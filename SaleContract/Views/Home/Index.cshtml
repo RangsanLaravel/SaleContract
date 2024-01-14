@@ -19,6 +19,7 @@
 <!--  Buttons -->
 <partial name="_Buttons.cshtml" />
 
+@Html.Raw(ViewData["sumarypriority"])
 <!--  Buttons -->
 <partial name="_Tables.cshtml" />
 
@@ -132,7 +133,7 @@
                                                       <p><strong class="label">change date ::</strong>${formatedate(response.data[i].fsystem_dt)}</p>
                                                       <p><strong class="label">change by ::</strong>${response.data[i].fsystem_id}</p>
                                                       <p><strong class="label">due date ::</strong>${formatedate(response.data[i].due_dt)}</p>
-                                                      <a href="#" class="reply-link" onclick="showremark('${response.data[i].id}','${response.data[i].remark_Statuses[j].ord_group}')">reply</a>
+                                                      <a href="#" class="reply-link" onclick="showremark('${response.data[i].id}','${response.data[i].ord_group}')">reply</a>
                                    </div>
                                            ${rederreply}
                                 </li>
