@@ -96,6 +96,7 @@ namespace SaleContractAPI.BusinessLogic
                         }
                     }
                 }
+
                 
             }
             catch (Exception ex)
@@ -233,18 +234,53 @@ namespace SaleContractAPI.BusinessLogic
             Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
+            UserInfo userInfo = new UserInfo() ;
             try
             {
-                
-                var rmkup =   await repository.INSERT_TBT_REAMRK_STATUS(condition);
-                var rmk = await repository.CHECK_UPLINE_FOR_GORUP(Convert.ToInt64(condition.ID_REMARK_UPLINE));
-                if (rmk != null && !string.IsNullOrEmpty( rmk.ID_STATUS_SALE))
+                /*if (!string.IsNullOrEmpty(condition.ID_STATUS_SALE))
                 {
-                    await repository.UPDATE_TBT_REAMRK_STATUS_GROUP(rmkup,rmkup);
+                    var idstatussale = await repository.CHECK_ID_STATUS_SALE(condition.ID_STATUS_SALE);
+                    if(!(idstatussale is null))
+                    {
+                        condition.ID_REMARK_UPLINE = idstatussale.ID;
+                        condition.ID_STATUS_SALE = string.Empty;
+                    }
+                }
+
+                var rmkup =   await repository.INSERT_TBT_REAMRK_STATUS(condition);
+                if(string.IsNullOrEmpty( condition.ID_STATUS_SALE))
+                {
+                    var rmk = await repository.CHECK_UPLINE_FOR_GORUP(Convert.ToInt64(condition.ID_REMARK_UPLINE));
+                    if (rmk != null && !string.IsNullOrEmpty(rmk.ID_STATUS_SALE))
+                    {
+                        await repository.UPDATE_TBT_REAMRK_STATUS_GROUP(rmkup, rmkup);
+                    }
+                    else
+                    {
+                        await repository.UPDATE_TBT_REAMRK_STATUS_GROUP(Convert.ToInt64(condition.ord_group), rmkup);
+                    }
+                    
                 }
                 else
                 {
-                    await repository.UPDATE_TBT_REAMRK_STATUS_GROUP (Convert.ToInt64(condition.ord_group), rmkup);
+                    await repository.UPDATE_TBT_REAMRK_STATUS_GROUP(rmkup, rmkup);
+                }
+
+                if (!string.IsNullOrEmpty(condition.ID_REMARK_UPLINE))
+                    userInfo = await repository.GET_EMAIL(condition.ID_REMARK_UPLINE);
+                else
+                    userInfo = null;
+                await repository.CommitTransection();
+                return userInfo;*/
+                var rmkup = await repository.INSERT_TBT_REAMRK_STATUS(condition);
+                var rmk = await repository.CHECK_UPLINE_FOR_GORUP(Convert.ToInt64(condition.ID_REMARK_UPLINE));
+                if (rmk != null && !string.IsNullOrEmpty(rmk.ID_STATUS_SALE))
+                {
+                    await repository.UPDATE_TBT_REAMRK_STATUS_GROUP(rmkup, rmkup);
+                }
+                else
+                {
+                    await repository.UPDATE_TBT_REAMRK_STATUS_GROUP(Convert.ToInt64(condition.ord_group), rmkup);
                 }
                 var userinfo = await repository.GET_EMAIL(condition.ID_REMARK_UPLINE);
                 await repository.CommitTransection();

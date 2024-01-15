@@ -168,6 +168,31 @@ ORDER BY Priority_SEQ ASC"
             }
         }
 
+        public async ValueTask<tbt_remark_status> CHECK_ID_STATUS_SALE(string ID_STATUS_SALE)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"SELECT *
+  FROM 
+  [{DBENV}].dbo.[tbt_remark_status] st 
+  WHERE st.TMN_FLG ='N'
+  AND st.ID_STATUS_SALE =@ID_STATUS_SALE"
+            };
+            command.Parameters.AddWithValue("@ID_STATUS_SALE", ID_STATUS_SALE);
+            using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    return dt.AsEnumerable<tbt_remark_status>().FirstOrDefault();
+                }
+                else
+                    return null;
+            }
+        }
+
 
         public async ValueTask<List<TBT_SALE_STATUS>> GET_TBT_SALE_STATUS(int company_id)
         {

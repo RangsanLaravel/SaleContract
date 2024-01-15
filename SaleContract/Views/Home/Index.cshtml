@@ -118,12 +118,12 @@
                                                                               <p><span class="label">Remark ::</span>${response.data[i].remark_Statuses[j].remark}</p>
                                                                                               <p><span class="label">Remark by ::</span>${response.data[i].remark_Statuses[j].remarK_ID}</p>
                                                                                       <p><span class="label">Remark date ::</span>${response.data[i].remark_Statuses[j].remarK_DT}</p>
-                                                                               <a href="#" class="reply-link" onclick="showremark('${response.data[i].remark_Statuses[j].id}','${response.data[i].remark_Statuses[j].ord_group}')">reply</a>
+                                                                               <a href="#" class="reply-link" onclick="showremark('${response.data[i].remark_Statuses[j].id}','${response.data[i].remark_Statuses[j].ord_group??''}')">reply</a>
                                             </div>`;
-                                        if (tmpchkdup != response.data[i].remark_Statuses[j].ID_REMARK_UPLINE) {
+                                        if (tmpchkdup != response.data[i].remark_Statuses[j].iD_REMARK_UPLINE) {
                                             mrg = mrg + 10;
                                         }
-                                        tmpchkdup = response.data[i].remark_Statuses[j].ID_REMARK_UPLINE;
+                                        tmpchkdup = response.data[i].remark_Statuses[j].iD_REMARK_UPLINE;
                                      }
                                  }
                                 render += `
@@ -133,7 +133,7 @@
                                                       <p><strong class="label">change date ::</strong>${formatedate(response.data[i].fsystem_dt)}</p>
                                                       <p><strong class="label">change by ::</strong>${response.data[i].fsystem_id}</p>
                                                       <p><strong class="label">due date ::</strong>${formatedate(response.data[i].due_dt)}</p>
-                                                      <a href="#" class="reply-link" onclick="showremark('${response.data[i].id}','${response.data[i].ord_group}')">reply</a>
+                                                                      <a href="#" class="reply-link" onclick="showremark('${response.data[i].id}','${response.data[i].ord_group}')">reply</a>
                                    </div>
                                            ${rederreply}
                                 </li>
@@ -194,12 +194,12 @@
                                                                                       <p><span class="label">Remark ::</span>${response.data[i].remark_Statuses[j].remark}</p>
                                                                                                       <p><span class="label">Remark by ::</span>${response.data[i].remark_Statuses[j].remarK_ID}</p>
                                                                                               <p><span class="label">Remark date ::</span>${response.data[i].remark_Statuses[j].remarK_DT}</p>
-                                                                                               <a href="#" class="reply-link" onclick="showremark('${response.data[i].remark_Statuses[j].id}','${response.data[i].remark_Statuses[j].ord_group}')">reply</a>
+                                                                                                       <a href="#" class="reply-link" onclick="showremark('${response.data[i].remark_Statuses[j].id}','${response.data[i].remark_Statuses[j].ord_group ?? ''}')">reply</a>
                                                     </div>`;
-                                        if (tmpchkdup != response.data[i].remark_Statuses[j].ID_REMARK_UPLINE) {
+                                        if (tmpchkdup != response.data[i].remark_Statuses[j].iD_REMARK_UPLINE) {
                                             mrg = mrg + 10;
                                         }
-                                        tmpchkdup = response.data[i].remark_Statuses[j].ID_REMARK_UPLINE;
+                                        tmpchkdup = response.data[i].remark_Statuses[j].iD_REMARK_UPLINE;
                                     }
                                 }
                                 render += `
@@ -209,7 +209,7 @@
                                                               <p><strong class="label">change date ::</strong>${formatedate(response.data[i].fsystem_dt)}</p>
                                                               <p><strong class="label">change by ::</strong>${response.data[i].fsystem_id}</p>
                                                               <p><strong class="label">due date ::</strong>${formatedate(response.data[i].due_dt)}</p>
-                                                                      <a href="#" class="reply-link" onclick="showremark('${response.data[i].id}','${response.data[i].ord_group}')">reply</a>
+                                                                                                      <a href="#" class="reply-link" onclick="showremark('${response.data[i].id}','${response.data[i].ord_group ?? ''}')">reply</a>
                                            </div>
                                                    ${rederreply}
                                         </li>
@@ -299,16 +299,27 @@
         }
         const showremark = (id, ord_group) => {
             $('#ID_REMARK_UPLINE').val(id)
+            // $('#ID_STATUS_SALE').val(ID_STATUS_SALE)
             $('#ord_group').val(ord_group)
+            $('#remarkreply').val('')
             $('#showreply').click()
         }
         const SaveRemark=()=>{
+            if (!$('#remarkreply').val()) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "ระบุข้อความ"
+                });
+                return;
+            }
             $.ajax({
                         url: `@Url.Action("INSERT_REMARK_REPLY", "Home")`,
                         type: 'POST',
                         dataType: 'json',
                         data: {
                             ID_REMARK_UPLINE: $('#ID_REMARK_UPLINE').val(),
+                            // ID_STATUS_SALE: $('#ID_STATUS_SALE').val(),
                             ord_group: $('#ord_group').val(),
                             REMARK: $('#remarkreply').val()
                         },

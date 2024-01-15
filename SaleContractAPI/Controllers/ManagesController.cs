@@ -141,7 +141,10 @@ namespace SaleContractAPI.Controllers
                 var _userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
                 condition.REMARK_ID = _userid;
                 var userinfo =  await this.service.INSERT_TBT_REAMRK_STATUS(condition);
-                
+                if(userinfo is null)
+                {
+                    return Ok();
+                }
                 return Ok(userinfo);
             }
             catch (Exception ex)

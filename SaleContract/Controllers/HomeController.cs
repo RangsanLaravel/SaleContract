@@ -228,9 +228,12 @@ namespace SaleContract.Controllers
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
             data.TMN_FLG = "N";
             data.REMARK_ID  =  string.Empty;
-            data.ID_STATUS_SALE = string.Empty;
+            data.ID_STATUS_SALE = string.IsNullOrEmpty(data.ID_STATUS_SALE)? string.Empty : data.ID_STATUS_SALE;
             data.REMARK_DT = string.Empty;
             data.ID = string.Empty;
+            data.ID_REMARK_UPLINE = string.IsNullOrEmpty(data.ID_REMARK_UPLINE) ? string.Empty : data.ID_REMARK_UPLINE;
+            data.ord_group = data.ord_group == "undefined" ? "": data.ord_group;
+            data.ord_group =string.IsNullOrEmpty( data.ord_group ) ? "" : data.ord_group;
             request.AddJsonBody(data);
             try
             {
