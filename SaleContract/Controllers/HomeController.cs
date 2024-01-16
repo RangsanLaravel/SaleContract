@@ -22,8 +22,8 @@ namespace SaleContract.Controllers
         }
         public IActionResult Index(SEARCH_COMPANY condition)
         {
-            //if (HttpContext.Session.GetString("token") is null)
-            //    return RedirectToAction("Logout");
+            if (HttpContext.Session.GetString("token") is null)
+                return RedirectToAction("Logout");
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
             RestRequest request = new RestRequest($"api/v1/Manages/GET_COMPANY", Method.Post);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
@@ -71,6 +71,7 @@ namespace SaleContract.Controllers
             ViewBag.Fullname = HttpContext.Session.GetString("fullname");
             ViewData["priority"] = GET_PRIORITY();
             ViewData["substatus"] = GET_STATUS();
+            ViewData["employee"] = GET_EMPLOYEE();
             //ViewData["position"] = "CK";
             ViewData["position"] = HttpContext.Session.GetString("position");
             //  ViewBag.Substatus = HttpContext.Session.GetString("substatus") == null ? null : JsonSerializer.Deserialize<List<substatus>>(HttpContext.Session.GetString("substatus"));
@@ -129,6 +130,18 @@ namespace SaleContract.Controllers
             return response.Data;
         }
 
+        protected List<employee> GET_EMPLOYEE()
+        {
+            RestClient client = new RestClient(_configuration["API:ISEESERVICE"]);
+            RestRequest request = new RestRequest($"api/v1/ISEEServices/GET_EMPLOYEE", Method.Get);
+            request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
+            var response = client.Execute<List<employee>>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                HttpContext.Session.SetString("employee", JsonSerializer.Serialize(response.Data));
+            }
+            return response.Data;
+        }
         protected List<Priority> GET_PRIORITY()
         {
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
@@ -184,6 +197,7 @@ namespace SaleContract.Controllers
                 data.modelType = data.modelType ?? string.Empty;
                 data.mobile = data.mobile ?? string.Empty;
                 data.email = data.email ?? string.Empty;
+                data.owner = data.owner ?? string.Empty;
                 data.People = data.People ?? string.Empty;
                 data.Dealvalue = data.Dealvalue ?? string.Empty;
                 data.Dealcreationdate = data.Dealcreationdate ?? string.Empty;

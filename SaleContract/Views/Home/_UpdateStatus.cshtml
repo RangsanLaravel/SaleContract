@@ -98,6 +98,21 @@
                             <input type="number" name="edDealvalue" class="form-control" id="edDealvalue" />
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="edEmployee" class="form-label">Owner</label>
+                            <select id="edEmployee" class="form-select" aria-label="Default select example">
+                                @if (ViewData["employee"] != null)
+                                {
+                                    var employee = ViewData["employee"] as List<SaleContractAPI.DataContract.employee>;
+                                    for (int i = 0; i < employee.Count; i++)
+                                    {
+                                        <option value="@employee[i].user_id">@employee[i].fullname?? "" +"  "+ @employee[i].lastname??""</option>
+                                    }
+                                }
+                            </select>
+                        </div>                       
+                    </div>
                     <input type="number" id="edPersen" class="form-control" name="edPersen" hidden>
                     <div class="row">
                         <div class="col-12">
@@ -192,6 +207,19 @@
                         <div class="col-4">
                             <label for="edPersen" class="form-label">Percen</label>
                             <input type="number" id="edPersen" class="form-control" name="edPersen">
+                        </div>
+                        <div class="col-4">
+                            <label for="edEmployee" class="form-label">Owner</label>
+                            <select id="edEmployee" class="form-select" aria-label="Default select example">
+                                @if (ViewData["employee"] != null)
+                                {
+                                    var employee = ViewData["employee"] as List<SaleContractAPI.DataContract.employee>;
+                                    for (int i = 0; i < employee.Count; i++)
+                                    {
+                                        <option value="@employee[i].user_id">@employee[i].fullname   @employee[i].lastname</option>
+                                    }
+                                }
+                            </select>
                         </div>
                     </div>
                     <div class="row">

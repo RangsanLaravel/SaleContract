@@ -244,6 +244,7 @@ ORDER BY tbtst.FSYSTEM_DT ASC"
       ,[Email]
       ,[Mobile]
       ,(select CONCAT(fullname,' ',lastname)  FROM [{DBENV}].[dbo].[tbm_employee] where user_id = Owner AND status =1) Owner
+      ,Owner As Ownerid
       ,[ModelType]
       ,[People]
       ,[Status]
@@ -623,7 +624,8 @@ SET Priority =@priority,
     People=@people,
     DealCreate=@DealCreate,
     DealDateFollowup=@DealDateFollowup,
-    DealValue=@DealValue
+    DealValue=@DealValue,
+    Owner=@Owner
 WHERE ID =@ID "
             };
 
@@ -643,6 +645,7 @@ WHERE ID =@ID "
             sql.Parameters.AddWithValue("@DealDateFollowup", string.IsNullOrEmpty( condition.Duedatefollowup) ? (object)DBNull.Value : DateTime.ParseExact(condition.Duedatefollowup, "dd/MM/yyyy",
                                        System.Globalization.CultureInfo.InvariantCulture) );
             sql.Parameters.AddWithValue("@DealValue", string.IsNullOrEmpty( condition.Dealvalue) ? (object)DBNull.Value :condition.Dealvalue);
+            sql.Parameters.AddWithValue("@Owner",string.IsNullOrEmpty(condition.owner)? (object)DBNull.Value : condition.owner);
             sql.Parameters.AddWithValue("@ID", condition.company_id);
 
             await sql.ExecuteNonQueryAsync();

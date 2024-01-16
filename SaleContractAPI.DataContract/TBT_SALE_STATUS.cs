@@ -18,6 +18,7 @@ namespace SaleContractAPI.DataContract
         public string Location { get; set; }
         public string People { get; set; }
         public string persen { get; set; }
+        public string owner { get; set; }
         public string Dealvalue { get; set; }
         public string Dealcreationdate { get; set; }
         public string Duedatefollowup { get; set; }

@@ -15,6 +15,7 @@ namespace SaleContractAPI.DataContract
         public string Email { get; set; }
         public string Mobile { get; set; }
         public string Owner { get; set; }
+        public string Ownerid { get; set; }
         public string ModelType { get; set; }
         public string People { get; set; }
         public string Status { get; set; }

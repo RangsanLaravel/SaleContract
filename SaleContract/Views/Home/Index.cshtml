@@ -32,10 +32,9 @@
         $(document).ready(function (){
             new DataTable('#datarender', {
                 responsive: true
-            });
+            });          
         })
         const position ='@ViewData["position"]'
-
         const clearbtn =()=>{
             let form = document.getElementById("frmsearch");
             form.reset();
@@ -48,9 +47,11 @@
                 closetimeline();
             }
         });
+
         const closetimeline =()=>{
             $('#cmpcls').click()
         }
+
         const showedit = (i) => {
             
             $('#companyid').val(companydetail[i].id)
@@ -66,6 +67,10 @@
             $('#edPeople').val(companydetail[i].people)
             $('#edDealvalue').val(companydetail[i].dealValue)
             $('#edPersen').val(companydetail[i].persen )
+            $('#edEmployee').val(companydetail[i].Ownerid)
+            $('#edEmployee').select2({
+                theme: 'bootstrap-5'
+            });
             $('#edDealcreationdate').datepicker({
                 uiLibrary: 'bootstrap5',
                 format: 'dd/mm/yyyy'
@@ -133,7 +138,7 @@
                                                       <p><strong class="label">change date ::</strong>${formatedate(response.data[i].fsystem_dt)}</p>
                                                       <p><strong class="label">change by ::</strong>${response.data[i].fsystem_id}</p>
                                                       <p><strong class="label">due date ::</strong>${formatedate(response.data[i].due_dt)}</p>
-                                                      <p><strong class="label">due date ::</strong>${formatedate(response.data[i].remark)}</p>
+                                                      <p><strong class="label">remark ::</strong>${response.data[i].remark??'-'}</p>
                                                                       <a href="#" class="reply-link" onclick="showremark('${response.data[i].id}','${response.data[i].ord_group}')">reply</a>
                                    </div>
                                            ${rederreply}
@@ -210,6 +215,7 @@
                                                               <p><strong class="label">change date ::</strong>${formatedate(response.data[i].fsystem_dt)}</p>
                                                               <p><strong class="label">change by ::</strong>${response.data[i].fsystem_id}</p>
                                                               <p><strong class="label">due date ::</strong>${formatedate(response.data[i].due_dt)}</p>
+                                                                      <p><strong class="label">remark ::</strong>${response.data[i].remark ?? '-'}</p>
                                                                                                       <a href="#" class="reply-link" onclick="showremark('${response.data[i].id}','${response.data[i].ord_group ?? ''}')">reply</a>
                                            </div>
                                                    ${rederreply}
@@ -264,7 +270,8 @@
                    people: $('#edPeople').val(),
                    dealvalue:$('#edDealvalue').val(),
                    Dealcreationdate:  $('#edDealcreationdate').val(),
-                   Duedatefollowup: $('#edDuedatefollowup').val()
+                   Duedatefollowup: $('#edDuedatefollowup').val(),
+                    owner: $('#edEmployee').val()
                 },
                 success: function (response) {
 
@@ -298,6 +305,7 @@
             let dtstr = dt.toLocaleString(dateLocation, options);
             return dtstr.replace(/(\d{2})\/(\d{2})\/(\d{4})/, dateformat);
         }
+
         const showremark = (id, ord_group) => {
             $('#ID_REMARK_UPLINE').val(id)
             // $('#ID_STATUS_SALE').val(ID_STATUS_SALE)
@@ -305,6 +313,7 @@
             $('#remarkreply').val('')
             $('#showreply').click()
         }
+
         const SaveRemark=()=>{
             if (!$('#remarkreply').val()) {
                 Swal.fire({
