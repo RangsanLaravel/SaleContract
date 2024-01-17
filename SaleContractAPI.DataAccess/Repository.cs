@@ -603,6 +603,22 @@ AND id =@id
             sql.Parameters.AddWithValue("@id", id);
             await sql.ExecuteNonQueryAsync();
         }
+        public async ValueTask UPDATE_OWNER(long id,string USERID)
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbt_company_detail]
+SET Owner=@Owner
+WHERE  id =@id
+            "
+            };
+            sql.Parameters.AddWithValue("@Owner", USERID);
+            sql.Parameters.AddWithValue("@id", id);
+            await sql.ExecuteNonQueryAsync();
+        }
         public async ValueTask UPDATE_TBT_COMPANY(TBT_SALE_STATUS condition)
         {
             SqlCommand sql = new SqlCommand
@@ -624,8 +640,7 @@ SET Priority =@priority,
     People=@people,
     DealCreate=@DealCreate,
     DealDateFollowup=@DealDateFollowup,
-    DealValue=@DealValue,
-    Owner=@Owner
+    DealValue=@DealValue  
 WHERE ID =@ID "
             };
 
@@ -645,7 +660,7 @@ WHERE ID =@ID "
             sql.Parameters.AddWithValue("@DealDateFollowup", string.IsNullOrEmpty( condition.Duedatefollowup) ? (object)DBNull.Value : DateTime.ParseExact(condition.Duedatefollowup, "dd/MM/yyyy",
                                        System.Globalization.CultureInfo.InvariantCulture) );
             sql.Parameters.AddWithValue("@DealValue", string.IsNullOrEmpty( condition.Dealvalue) ? (object)DBNull.Value :condition.Dealvalue);
-            sql.Parameters.AddWithValue("@Owner",string.IsNullOrEmpty(condition.owner)? (object)DBNull.Value : condition.owner);
+          
             sql.Parameters.AddWithValue("@ID", condition.company_id);
 
             await sql.ExecuteNonQueryAsync();

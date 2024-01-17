@@ -320,6 +320,10 @@ namespace SaleContractAPI.BusinessLogic
                 {
                     await repository.UPDATE_TBT_COMPANY_DETAIL_WON(condition.company_id.ToString());
                 }
+                if (!string.IsNullOrEmpty(condition.owner))
+                {
+                    await repository.UPDATE_OWNER(condition.company_id, condition.owner);
+                }
                 await repository.UPDATE_TBT_COMPANY_DETAIL_STATUS(condition.status_code,condition.company_id.ToString());
                 //var companeydetail = new company_detail
                 //{
