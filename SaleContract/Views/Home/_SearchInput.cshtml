@@ -32,7 +32,10 @@
         </div>
         <div class="row">
             <div class="mb-3 col-6" >
-                <label for="ddpEmployee" class="form-label">Owner</label>
+                <div class="mb-3 col-6">
+                    <label for="txtName" class="form-label">Name</label>
+                    <input type="text" name="NAME" class="form-control" id="txtName" placeholder="Name">
+                @* <label for="ddpEmployee" class="form-label">Owner</label>
                 <select id="ddpEmployee" name="Owner" class="form-select" aria-label="Default select example">
                     <option value="" selected>- ทั้งหมด -</option>
                     @if (ViewData["employee"] != null)
@@ -43,7 +46,7 @@
                             <option value="@employee[i].user_id">@employee[i].fullname   @employee[i].lastname</option>
                         }
                     }
-                </select>
+                </select> *@
             </div>
             <div class="mb-3 col-6">
                 <label for="txtContract" class="form-label">Contract</label>

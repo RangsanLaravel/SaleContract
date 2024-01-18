@@ -89,7 +89,7 @@ namespace SaleContractAPI.Controllers
                 }
                 var result = await this.service.GET_COMPANY(condition);
                 if (result is null)
-                    return Ok();
+                    return NoContent();
                 return Ok(result);
             }
             catch (Exception ex)
