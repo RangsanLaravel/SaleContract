@@ -80,7 +80,8 @@ namespace SaleContract.Controllers
             {
 
                 ViewData["sumarypriority"] = @$"<p><strong>Hight : </strong>{(response?.Data == null ? 0 : response.Data.Where(a => a.Priority == "1")?.Count()
-                    )} <strong>Medium :</strong>{(response?.Data == null ? 0 : response.Data.Where(a => a.Priority == "2")?.Count())} <strong>Low :</strong>{(response?.Data == null ? 0 : response.Data.Where(a => a.Priority == "3")?.Count())} </p>";
+                    )} <strong>Medium :</strong>{(response?.Data == null ? 0 : response.Data.Where(a => a.Priority == "2")?.Count())} <strong>Low :</strong>{(response?.Data == null ? 0 : response.Data.Where(a => a.Priority == "3")?.Count())} 
+                      <strong> DealValue :</strong>{(response?.Data == null ? 0 : response.Data.Select(a => { a.DealValue = a.DealValue ??"0"; return a; }).Sum(a=>Convert.ToInt64(a.DealValue)))}</p>";
                 return View(response?.Data);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
