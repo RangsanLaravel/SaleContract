@@ -183,5 +183,34 @@ namespace SaleContractAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("SP_DUPLICATE_COMPANY/{ID}")]
+        public async ValueTask<IActionResult> SP_DUPLICATE_COMPANY(string ID)
+        {
+            try
+            {
+                var _userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                await this.service.SP_DUPLICATE_COMPANY(ID, _userid);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("SP_GET_COMPANY_WON/{ID}")]
+        public async ValueTask<IActionResult> SP_GET_COMPANY_WON(string dateTimest, string dateTimeen)
+        {
+            try
+            {
+                var result=  await this.service.SP_GET_COMPANY_WON(dateTimest, dateTimeen);
+                if (result is null)
+                    return NoContent();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

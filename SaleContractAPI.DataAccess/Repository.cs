@@ -10,6 +10,7 @@ using ITUtility;
 using DataAccessUtility;
 using System.Linq;
 using Microsoft.IdentityModel.Tokens;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace SaleContractAPI.DataAccess
 {
@@ -640,7 +641,8 @@ SET Priority =@priority,
     People=@people,
     DealCreate=@DealCreate,
     DealDateFollowup=@DealDateFollowup,
-    DealValue=@DealValue  
+    DealValue=@DealValue  ,
+    LastUpdate =GETDATE()
 WHERE ID =@ID "
             };
 
@@ -732,8 +734,37 @@ WHERE ID =@ID "
             await sql.ExecuteNonQueryAsync();
         }
 
-      
+
         #endregion " UPDATE "
+
+        #region " PROCEDURE "
+        public async ValueTask SP_DUPLICATE_COMPANY(string ID,string USERID)
+        {
+            SqlCommand cmd = new SqlCommand($"[{DBENV}].[dbo].[sp_duplicate_company]", this.sqlConnection);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@ID", ID);
+            cmd.Parameters.AddWithValue("@USERID", USERID);
+            await cmd.ExecuteNonQueryAsync();
+        }
+        public async  ValueTask<List<company_detail>> SP_GET_COMPANY_WON(DateTime? dateTimest,DateTime? dateTimeen)
+        {
+            SqlCommand cmd = new SqlCommand($"[{DBENV}].[dbo].[sp_get_company_won]", this.sqlConnection);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Transaction = this.transaction;
+            cmd.Parameters.AddWithValue("@statusdtst", dateTimest);
+            cmd.Parameters.AddWithValue("@statusdten", dateTimeen);
+            using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(cmd))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    return dt.AsEnumerable<company_detail>().ToList();
+                }
+                else
+                    return null;
+            }
+            
+        }
+        #endregion " PROCEDURE "
 
     }
 }

@@ -395,5 +395,70 @@ namespace SaleContractAPI.BusinessLogic
             }
         }
         #endregion " UPDATE "
+
+        #region " PROCEDURE "
+        public async ValueTask SP_DUPLICATE_COMPANY(string ID, string USERID)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+            try
+            {
+                await repository.SP_DUPLICATE_COMPANY(ID,USERID);
+                await repository.CommitTransection();
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
+
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+        }
+
+        public async ValueTask<List<company_detail>> SP_GET_COMPANY_WON(string dateTimest, string dateTimeen)
+        {
+            List<company_detail> dataObjects = null;
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            DateTime? dtst = null;
+            DateTime? dten = null;
+            try
+            {
+                if (!string.IsNullOrEmpty(dateTimest))
+                {
+                    dtst = DateTime.ParseExact(dateTimest, "dd/MM/yyyy",
+                                       System.Globalization.CultureInfo.InvariantCulture);
+                }
+                if (!string.IsNullOrEmpty(dateTimeen))
+                {
+                    dten = DateTime.ParseExact(dateTimeen, "dd/MM/yyyy",
+                                       System.Globalization.CultureInfo.InvariantCulture);
+                }
+                dataObjects = await repository.SP_GET_COMPANY_WON(dtst, dten);
+                foreach (var item in dataObjects)
+                {
+                    var status = await repository.GET_TBT_SALE_STATUS(Convert.ToInt32(item.ID));
+                    if (!(status is null))
+                    {
+                        item.Status = status.LastOrDefault().status_description;
+                    }                  
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
+        #endregion " PROCEDURE "
     }
 }
