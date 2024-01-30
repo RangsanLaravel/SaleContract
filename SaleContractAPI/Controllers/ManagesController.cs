@@ -197,12 +197,12 @@ namespace SaleContractAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("SP_GET_COMPANY_WON/{ID}")]
-        public async ValueTask<IActionResult> SP_GET_COMPANY_WON(string dateTimest, string dateTimeen)
+        [HttpPost("SP_GET_COMPANY_WON")]
+        public async ValueTask<IActionResult> SP_GET_COMPANY_WON(SEARCH_COMPANY_WON condition)
         {
             try
             {
-                var result=  await this.service.SP_GET_COMPANY_WON(dateTimest, dateTimeen);
+                var result=  await this.service.SP_GET_COMPANY_WON(condition.dateTimest, condition.dateTimeen);
                 if (result is null)
                     return NoContent();
                 return Ok(result);
