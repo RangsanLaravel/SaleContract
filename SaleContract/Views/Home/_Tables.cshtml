@@ -22,6 +22,10 @@
                 <th scope="col">% Percen </th>
                 <th scope="col">Won</th>
                 <th scope="col">Last Updated</th>
+                @if (ViewData["position"] as string == "CK")
+                {
+                    <th scope="col">Add New line</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -66,6 +70,12 @@
                             <td ondblclick="showedit('@i')">@won</td>
                         }
                         <td ondblclick="showedit('@i')">@Model[i].LastUpdate</td>
+                        @if (ViewData["position"] as string == "CK")
+                        {
+                            <td>
+                                <a href="#" onclick="duplicatedata('@Model[i].ID')">เพิ่มรายการนี้</a>
+                            </td>
+                        }
                     </tr>
                 }
             }

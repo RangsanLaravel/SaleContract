@@ -83,11 +83,11 @@
                 uiLibrary: 'bootstrap5',
                 format: 'dd/mm/yyyy'
             });
-            $('#wondtst').datepicker({
+            $('#dateTimest').datepicker({
                 uiLibrary: 'bootstrap5',
                 format: 'dd/mm/yyyy'
             });
-            $('#wondted').datepicker({
+            $('#dateTimeen').datepicker({
                 uiLibrary: 'bootstrap5',
                 format: 'dd/mm/yyyy'
             });
@@ -374,6 +374,27 @@
             return `${dateObject.getMonth() + 1}/${dateObject.getDate()}/${dateObject.getFullYear()} ${dateObject.toLocaleTimeString()}`;
         }
 
+        const duplicatedata=(id)=>{
+            $.ajax({
+                url: `@Url.Action("DuplicateData", "Home")/${id}`,
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire("Saved!", "", "success");                      
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: response.error
+                        });
+                    }
+
+                },
+                error: function () {
+
+                }
+            });
+        }
        
     </script>
 }

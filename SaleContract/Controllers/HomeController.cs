@@ -14,58 +14,21 @@ namespace SaleContract.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IConfiguration _configuration;
-    
+
         public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
         }
-        public IActionResult Index(SEARCH_COMPANY condition)
+        public IActionResult Index(SEARCH_COMPANY_WON condition)
         {
             if (HttpContext.Session.GetString("token") is null)
                 return RedirectToAction("Logout");
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
-            RestRequest request = new RestRequest($"api/v1/Manages/GET_COMPANY", Method.Post);
+            RestRequest request = new RestRequest($"api/v1/Manages/SP_GET_COMPANY_WON", Method.Post);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
-            var isNulldata = condition.NAME is null
-                            && condition.MOBILE is null
-                            && condition.Status is null
-                            && condition.EMAIL is null
-                            && condition.Priority is null
-                            ;
-            if (isNulldata)
-            {
-                condition = new SEARCH_COMPANY
-                {
-                    limit = "50",
-                    NAME = string.Empty,
-                    Status = string.Empty,
-                    MOBILE = string.Empty,
-                    EMAIL = string.Empty,
-                    Priority = string.Empty,
-                    ID = string.Empty,
-                    Owner = string.Empty,
-                    DealDateFollowup =string.Empty,
-                    Contract = string.Empty,
-                Remark =  string.Empty,
-                ModelType =  string.Empty
-            };
-            }
-            else
-            {
-                condition.NAME = condition.NAME ?? string.Empty;
-                condition.Status = condition.Status ?? string.Empty;
-                condition.Priority = condition.Priority ?? string.Empty;
-                condition.MOBILE = condition.MOBILE ?? string.Empty;
-                condition.EMAIL = condition.EMAIL ?? string.Empty;
-                condition.Contract = condition.Contract ?? string.Empty;
-                condition.Remark = condition.Remark ?? string.Empty;
-                condition.ModelType = condition.ModelType ?? string.Empty;
-                condition.limit = condition.limit ?? "100";
-                condition.ID = string.Empty;
-                condition.Owner = string.Empty;
-                condition.DealDateFollowup = string.Empty;
-            }
+            condition.dateTimest = condition.dateTimest ?? string.Empty;
+            condition.dateTimeen = condition.dateTimeen ?? string.Empty;
             request.AddBody(condition);
             var response = client.Execute<List<company_detail>>(request);
             ViewBag.Fullname = HttpContext.Session.GetString("fullname");
@@ -81,7 +44,7 @@ namespace SaleContract.Controllers
 
                 ViewData["sumarypriority"] = @$"<p><strong>Hight : </strong>{(response?.Data == null ? 0 : response.Data.Where(a => a.Priority == "1")?.Count()
                     )} <strong>Medium :</strong>{(response?.Data == null ? 0 : response.Data.Where(a => a.Priority == "2")?.Count())} <strong>Low :</strong>{(response?.Data == null ? 0 : response.Data.Where(a => a.Priority == "3")?.Count())} 
-                      <strong> DealValue :</strong>{(response?.Data == null ? 0 : response.Data.Select(a => { a.DealValue = a.DealValue ??"0"; return a; }).Sum(a=>Convert.ToInt64(a.DealValue)))}</p>";
+                      <strong> DealValue :</strong>{(response?.Data == null ? 0 : response.Data.Select(a => { a.DealValue = a.DealValue ?? "0"; return a; }).Sum(a => Convert.ToInt64(a.DealValue)))}</p>";
                 return View(response?.Data);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
@@ -151,7 +114,7 @@ namespace SaleContract.Controllers
             var response = client.Execute<List<Priority>>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                HttpContext.Session.SetString("priority", JsonSerializer.Serialize(response.Data));            
+                HttpContext.Session.SetString("priority", JsonSerializer.Serialize(response.Data));
             }
             return response.Data;
         }
@@ -227,10 +190,10 @@ namespace SaleContract.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, error = $"{ex.Message} ::{ex.StackTrace}"  });
+                return Json(new { success = false, error = $"{ex.Message} ::{ex.StackTrace}" });
             }
-                     
-           
+
+
         }
 
         [HttpPost("INSERT_REMARK_REPLY")]
@@ -242,13 +205,13 @@ namespace SaleContract.Controllers
             RestRequest request = new RestRequest($"/api/v1/Manages/INSERT_TBT_REAMRK_STATUS", Method.Post);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
             data.TMN_FLG = "N";
-            data.REMARK_ID  =  string.Empty;
-            data.ID_STATUS_SALE = string.IsNullOrEmpty(data.ID_STATUS_SALE)? string.Empty : data.ID_STATUS_SALE;
+            data.REMARK_ID = string.Empty;
+            data.ID_STATUS_SALE = string.IsNullOrEmpty(data.ID_STATUS_SALE) ? string.Empty : data.ID_STATUS_SALE;
             data.REMARK_DT = string.Empty;
             data.ID = string.Empty;
             data.ID_REMARK_UPLINE = string.IsNullOrEmpty(data.ID_REMARK_UPLINE) ? string.Empty : data.ID_REMARK_UPLINE;
-            data.ord_group = data.ord_group == "undefined" ? "": data.ord_group;
-            data.ord_group =string.IsNullOrEmpty( data.ord_group ) ? "" : data.ord_group;
+            data.ord_group = data.ord_group == "undefined" ? "" : data.ord_group;
+            data.ord_group = string.IsNullOrEmpty(data.ord_group) ? "" : data.ord_group;
             request.AddJsonBody(data);
             try
             {
@@ -279,7 +242,7 @@ namespace SaleContract.Controllers
             {
                 return Json(new { success = false, error = ex.Message });
             }
-           
+
         }
         public IActionResult Create(company_detail company)
         {
@@ -289,7 +252,7 @@ namespace SaleContract.Controllers
             company.ID = "1234";
             company.LastUpdate = DateTime.Now;
             company.DealCreate = DateTime.Now;
-            company.DealDateNoti = company.DealDateFollowup!=null? company.DealDateFollowup.Value.AddDays(-2):null;
+            company.DealDateNoti = company.DealDateFollowup != null ? company.DealDateFollowup.Value.AddDays(-2) : null;
             if (string.IsNullOrEmpty(company.NAME))
             {
                 ViewData["priority"] = GET_PRIORITY();
@@ -300,7 +263,7 @@ namespace SaleContract.Controllers
             {
                 RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
                 RestRequest request = new RestRequest($"/api/v1/Manages/INSERT_TBT_COMPANY_DETAIL", Method.Post);
-                request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));               
+                request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
                 request.AddJsonBody(company);
                 var response = client.Execute<List<Priority>>(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -311,7 +274,26 @@ namespace SaleContract.Controllers
                 return View("Error");
             }
 
-           // return RedirectToAction(nameof(Index));
+            // return RedirectToAction(nameof(Index));
+        }
+        [HttpGet("DuplicateData/{companyid}")]
+        public IActionResult DuplicateData(string companyid)
+        {
+
+            RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
+            RestRequest request = new RestRequest($"/api/v1/Manages/SP_DUPLICATE_COMPANY/{companyid}", Method.Get);
+            request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));           
+            var response = client.Execute(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return Json(new { success = true});
+            }else
+            {
+                return Json(new { success = false, error = response.Content });
+            }
+
+
+            // return RedirectToAction(nameof(Index));
         }
         public IActionResult Privacy()
         {
