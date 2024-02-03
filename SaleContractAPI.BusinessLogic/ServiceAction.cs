@@ -135,6 +135,8 @@ namespace SaleContractAPI.BusinessLogic
             try
             {
                 dataObjects = await repository.GET_COMPANY(condition);
+                if (dataObjects is null)
+                    return dataObjects;
                 foreach (var item in dataObjects)
                 {
                  var status =   await repository.GET_TBT_SALE_STATUS(Convert.ToInt32(item.ID));
