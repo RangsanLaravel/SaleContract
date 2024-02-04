@@ -751,8 +751,8 @@ WHERE ID =@ID "
             SqlCommand cmd = new SqlCommand($"[{DBENV}].[dbo].[sp_get_company_won]", this.sqlConnection);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Transaction = this.transaction;
-            cmd.Parameters.AddWithValue("@statusdtst", dateTimest);
-            cmd.Parameters.AddWithValue("@statusdten", dateTimeen);
+            cmd.Parameters.AddWithValue("@statusdtst", dateTimest ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@statusdten", dateTimeen?? (object)DBNull.Value);
             using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(cmd))
             {
                 if (dt.Rows.Count > 0)

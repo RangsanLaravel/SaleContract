@@ -31,22 +31,9 @@
             </div>          
         </div>
         <div class="row">
-            <div class="mb-3 col-6" >
-                <div class="mb-3 col-6">
+            <div class="mb-3 col-6" >              
                     <label for="txtName" class="form-label">Name</label>
-                    <input type="text" name="NAME" class="form-control" id="txtName" placeholder="Name">
-                @* <label for="ddpEmployee" class="form-label">Owner</label>
-                <select id="ddpEmployee" name="Owner" class="form-select" aria-label="Default select example">
-                    <option value="" selected>- ทั้งหมด -</option>
-                    @if (ViewData["employee"] != null)
-                    {
-                        var employee = ViewData["employee"] as List<SaleContractAPI.DataContract.employee>;
-                        for (int i = 0; i < employee.Count; i++)
-                        {
-                            <option value="@employee[i].user_id">@employee[i].fullname   @employee[i].lastname</option>
-                        }
-                    }
-                </select> *@
+                    <input type="text" name="NAME" class="form-control" id="txtName" placeholder="Name">   
             </div>
             <div class="mb-3 col-6">
                 <label for="txtContract" class="form-label">Contract</label>

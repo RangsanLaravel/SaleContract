@@ -441,6 +441,8 @@ namespace SaleContractAPI.BusinessLogic
                                        System.Globalization.CultureInfo.InvariantCulture);
                 }
                 dataObjects = await repository.SP_GET_COMPANY_WON(dtst, dten);
+                if (dataObjects is null)
+                    return dataObjects;
                 foreach (var item in dataObjects)
                 {
                     var status = await repository.GET_TBT_SALE_STATUS(Convert.ToInt32(item.ID));
