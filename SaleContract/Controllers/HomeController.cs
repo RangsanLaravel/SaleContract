@@ -355,5 +355,25 @@ namespace SaleContract.Controllers
             }
             return null;
         }
+        [HttpGet("DuplicateData/{companyid}")]
+        public IActionResult DuplicateData(string companyid)
+        {
+
+            RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
+            RestRequest request = new RestRequest($"/api/v1/Manages/SP_DUPLICATE_COMPANY/{companyid}", Method.Get);
+            request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
+            var response = client.Execute(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, error = response.Content });
+            }
+
+
+            // return RedirectToAction(nameof(Index));
+        }
     }
 }
