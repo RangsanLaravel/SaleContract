@@ -22,8 +22,8 @@ namespace SaleContract.Controllers
         }
         public IActionResult Index(SEARCH_COMPANY condition)
         {
-            //if (HttpContext.Session.GetString("token") is null)
-            //    return RedirectToAction("Logout");
+            if (HttpContext.Session.GetString("token") is null)
+                return RedirectToAction("Logout");
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
             RestRequest request = new RestRequest($"api/v1/Manages/GET_COMPANY", Method.Post);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
@@ -37,7 +37,7 @@ namespace SaleContract.Controllers
             {
                 condition = new SEARCH_COMPANY
                 {
-                    limit = "50",
+                    limit = "1000",
                     NAME = string.Empty,
                     Status = string.Empty,
                     MOBILE = string.Empty,
@@ -61,7 +61,7 @@ namespace SaleContract.Controllers
                 condition.Contract = condition.Contract ?? string.Empty;
                 condition.Remark = condition.Remark ?? string.Empty;
                 condition.ModelType = condition.ModelType ?? string.Empty;
-                condition.limit = condition.limit ?? "100";
+                condition.limit = condition.limit ?? "1000";
                 condition.ID = string.Empty;
                 condition.Owner = string.Empty;
                 condition.DealDateFollowup = string.Empty;
@@ -355,12 +355,12 @@ namespace SaleContract.Controllers
             }
             return null;
         }
-        [HttpGet("DuplicateData/{companyid}")]
-        public IActionResult DuplicateData(string companyid)
+        [HttpPost]
+        public IActionResult DuplicateData(SEARCH_COMPANY companyid)
         {
 
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
-            RestRequest request = new RestRequest($"/api/v1/Manages/SP_DUPLICATE_COMPANY/{companyid}", Method.Get);
+            RestRequest request = new RestRequest($"/api/v1/Manages/SP_DUPLICATE_COMPANY/{companyid.ID}", Method.Get);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
             var response = client.Execute(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)

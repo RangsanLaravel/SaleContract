@@ -368,7 +368,11 @@
         const duplicatedata = (id) => {
             $.ajax({
                 url: `@Url.Action("DuplicateData", "Home")/${id}`,
-                type: 'GET',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    ID:id
+                },
                 success: function (response) {
                     if (response.success) {
                         Swal.fire("Saved!", "", "success");

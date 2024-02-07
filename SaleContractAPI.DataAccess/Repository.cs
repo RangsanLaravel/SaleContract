@@ -742,6 +742,7 @@ WHERE ID =@ID "
         {
             SqlCommand cmd = new SqlCommand($"[{DBENV}].[dbo].[sp_duplicate_company]", this.sqlConnection);
             cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Transaction = this.transaction;
             cmd.Parameters.AddWithValue("@ID", ID);
             cmd.Parameters.AddWithValue("@USERID", USERID);
             await cmd.ExecuteNonQueryAsync();
