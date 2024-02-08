@@ -273,6 +273,7 @@ ORDER BY tbtst.FSYSTEM_DT ASC"
   AND (@DealDateFollowup IS NULL OR DealDateFollowup=@DealDateFollowup)
   AND (@Contract IS NULL OR Contract =@Contract)
   AND (@ModelType IS NULL OR ModelType =@ModelType)
+  AND (Status !='WON' OR Status IS NULL)
    "
             };
             command.Parameters.AddWithValue("@name", string.IsNullOrWhiteSpace(condition.NAME) ? (object)DBNull.Value : condition.NAME);

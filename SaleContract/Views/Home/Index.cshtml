@@ -375,7 +375,14 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        Swal.fire("Saved!", "", "success");
+                        Swal.fire({
+                            title: "Saved!",
+                            icon: "success",
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.getElementById("frmsearch").submit();
+                            }
+                        });
                     } else {
                         Swal.fire({
                             icon: "error",
