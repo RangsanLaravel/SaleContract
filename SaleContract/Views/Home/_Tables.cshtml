@@ -4,6 +4,7 @@
             <tr>
                 <th>#</th>
                 <th scope="col">Order</th>
+                <th scope="col">doc_no </th>
                 <th scope="col">Name</th>
                 <th scope="col">Website </th>
                 <th scope="col">Contract </th>
@@ -12,7 +13,6 @@
                 <th scope="col">Mobile </th>
                 <th scope="col">Owner </th>
                 <th scope="col">Model Types </th>
-                <th scope="col">People </th>
                 <th scope="col">Status </th>
                 <th scope="col">Priority </th>
                 <th scope="col">Deal creation date </th>
@@ -36,6 +36,7 @@
                     <tr>
                         <th><a href="#" onclick="showtimeline('@Model[i].ID','@Model[i].NAME')"><i class="bi bi-plus-square-fill" style="font-size:15px"></i></a></th>
                         <th ondblclick="showedit('@i')" scope="row">@(i + 1)</th>
+                        <td ondblclick="showedit('@i')">@Model[i].People </td>
                         <td ondblclick="showedit('@i')">@Model[i].NAME </td>
                         <td ondblclick="showedit('@i')">@Model[i].WEBSITE </td>
                         <td ondblclick="showedit('@i')">@Model[i].Contract </td>
@@ -44,7 +45,6 @@
                         <td ondblclick="showedit('@i')">@Model[i].Mobile </td>
                         <td ondblclick="showedit('@i')">@Model[i].Owner </td>
                         <td ondblclick="showedit('@i')">@Model[i].ModelType </td>
-                        <td ondblclick="showedit('@i')">@Model[i].People </td>
                         <td ondblclick="showedit('@i')">@Model[i].Status</td>
                         @if (Model[i].Priority_description == "High")
                         {

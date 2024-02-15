@@ -274,6 +274,7 @@ ORDER BY tbtst.FSYSTEM_DT ASC"
   AND (@Contract IS NULL OR Contract =@Contract)
   AND (@ModelType IS NULL OR ModelType =@ModelType)
   AND (Status !='WON' OR Status IS NULL)
+ORDER BY cmp.NAME ASC
    "
             };
             command.Parameters.AddWithValue("@name", string.IsNullOrWhiteSpace(condition.NAME) ? (object)DBNull.Value : condition.NAME);
