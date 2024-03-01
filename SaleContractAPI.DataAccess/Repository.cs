@@ -236,7 +236,7 @@ ORDER BY tbtst.FSYSTEM_DT ASC"
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = $@"SELECT {(string.IsNullOrEmpty(condition.limit) ? "" : $"TOP {condition.limit}")}
+                CommandText = $@"SELECT 
             [ID]
       ,[NAME]
       ,[WEBSITE]
