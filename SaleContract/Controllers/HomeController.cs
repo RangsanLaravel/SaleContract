@@ -25,7 +25,7 @@ namespace SaleContract.Controllers
             if (HttpContext.Session.GetString("token") is null)
                 return RedirectToAction("Logout");
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
-            RestRequest request = new RestRequest($"api/v1/Manages/GET_COMPANY", Method.Post);
+            RestRequest request = new RestRequest($"api/v1/Manages/GET_COMPANY_JOB", Method.Post);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
             var isNulldata = condition.NAME is null
                             && condition.MOBILE is null
@@ -160,7 +160,7 @@ namespace SaleContract.Controllers
         public IActionResult GET_TIMELINE(string companyid)
         {
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
-            var request = new RestRequest($"api/v1/Manages/GET_TBT_SALE_STATUS/{companyid}", Method.Get);
+            var request = new RestRequest($"api/v1/Manages/GET_TBT_SALE_STATUS_JOB/{companyid}", Method.Get);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
             var response = client.Execute<List<TBT_SALE_STATUS>>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -183,7 +183,7 @@ namespace SaleContract.Controllers
             try
             {
                 RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
-                RestRequest request = new RestRequest($"/api/v1/Manages/INSERT_TBT_SALE_STATUS", Method.Post);
+                RestRequest request = new RestRequest($"/api/v1/Manages/INSERT_TBT_SALE_STATUS_JOB", Method.Post);
                 request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
                 data.priority = data.priority ?? string.Empty;
                 data.name = data.name ?? string.Empty;
@@ -239,7 +239,7 @@ namespace SaleContract.Controllers
             if (HttpContext.Session.GetString("token") is null)
                 return RedirectToAction("Logout");
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
-            RestRequest request = new RestRequest($"/api/v1/Manages/INSERT_TBT_REAMRK_STATUS", Method.Post);
+            RestRequest request = new RestRequest($"/api/v1/Manages/INSERT_TBT_REAMRK_STATUS_JOB", Method.Post);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
             data.TMN_FLG = "N";
             data.REMARK_ID  =  string.Empty;
@@ -301,7 +301,7 @@ namespace SaleContract.Controllers
             else
             {
                 RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
-                RestRequest request = new RestRequest($"/api/v1/Manages/INSERT_TBT_COMPANY_DETAIL", Method.Post);
+                RestRequest request = new RestRequest($"/api/v1/Manages/INSERT_TBT_COMPANY_DETAIL_JOB", Method.Post);
                 request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));               
                 request.AddJsonBody(company);
                 var response = client.Execute<List<Priority>>(request);
@@ -348,7 +348,7 @@ namespace SaleContract.Controllers
         private email_detail GET_EMAILDETAIL(long UPLINEID)
         {
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
-            RestRequest request = new RestRequest($"/api/v1/Manages/GET_EMAILDETAIL/{UPLINEID}", Method.Get);
+            RestRequest request = new RestRequest($"/api/v1/Manages/GET_EMAILDETAIL_JOB/{UPLINEID}", Method.Get);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
             var response = client.Execute<email_detail>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -362,7 +362,7 @@ namespace SaleContract.Controllers
         {
 
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
-            RestRequest request = new RestRequest($"/api/v1/Manages/SP_DUPLICATE_COMPANY/{companyid.ID}", Method.Get);
+            RestRequest request = new RestRequest($"/api/v1/Manages/SP_DUPLICATE_COMPANY_JOB/{companyid.ID}", Method.Get);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
             var response = client.Execute(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
