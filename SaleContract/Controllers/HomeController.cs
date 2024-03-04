@@ -286,6 +286,8 @@ namespace SaleContract.Controllers
             ViewBag.Fullname = HttpContext.Session.GetString("fullname");
             company.Priority_description = "1234";
             company.Owner = "1234";
+            company.Ownerid = "1234";
+            company.Won = "1234";
             company.ID = "1234";
             company.LastUpdate = DateTime.Now;
             company.DealCreate = DateTime.Now;
