@@ -67,7 +67,7 @@
             $('#edPeople').val(companydetail[i].people)
             $('#edDealvalue').val(companydetail[i].dealValue)
             $('#edPersen').val(companydetail[i].persen)
-            $('#edpriority').val(companydetail[i].Priority)
+            $('#edpriority').val(companydetail[i].priority)
             $('#edEmployee').val(companydetail[i].Ownerid)
             $('#edEmployee').select2({
                 theme: 'bootstrap-5'
@@ -370,7 +370,7 @@
             let dateObject = new Date(date);
 
             // จัดรูปแบบวันที่และเวลา
-            return `${(dateObject.getMonth() + 1).padStart(2, '0')}/${(dateObject.getDate()).padStart(2, '0')}/${dateObject.getFullYear()} ${dateObject.toLocaleTimeString()}`;
+            return `${(dateObject.getDate()).toString().padStart(2, '0')}/${(dateObject.getMonth() + 1).toString().padStart(2, '0')}/${dateObject.getFullYear()} ${dateObject.toLocaleTimeString()}`;
         }
 
         const duplicatedata=(id)=>{
