@@ -337,5 +337,67 @@ namespace SaleContract.Controllers
             }
             return null;
         }
-    }
+
+        [HttpGet]
+        public IActionResult SP_GET_REPORT_CRM_BY_SALE()
+        {
+
+            RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
+            RestRequest request = new RestRequest($"/api/v1/Manages/SP_GET_REPORT_CRM_BY_SALE", Method.Post);
+            request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
+            var response = client.Execute<string>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var database64 = response.Data;
+                if (database64 != null)
+                {
+                    return File(Convert.FromBase64String(database64), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                }
+                else
+                {
+                    ViewBag.Error = "ไม่พบไฟล์";
+                    return View("Error");
+                }
+
+            }
+            else
+            {
+                ViewBag.Error = response.Content;
+                return View("Error");
+            }
+
+
+            // return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public IActionResult SP_GET_REPORT_CRM_BY_STATUS_SALE()
+        {
+
+            RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
+            RestRequest request = new RestRequest($"/api/v1/Manages/SP_GET_REPORT_CRM_BY_STATUS_SALE", Method.Post);
+            request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
+            var response = client.Execute<string>(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var database64 = response.Data;
+                if (database64 != null)
+                {
+                    return File(Convert.FromBase64String(database64), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                }
+                else
+                {
+                    ViewBag.Error = "ไม่พบไฟล์";
+                    return View("Error");
+                }
+
+            }
+            else
+            {
+                ViewBag.Error = response.Content;
+                return View("Error");
+            }
+
+            // return RedirectToAction(nameof(Index));
+        }   
+}
 }
