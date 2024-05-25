@@ -14,7 +14,7 @@ using System.Runtime.InteropServices.ComTypes;
 
 namespace SaleContractAPI.DataAccess
 {
-    public class Repository
+    public partial class Repository
     {
         #region " STATIC "
 

@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EPPlus" Version="7.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SaleContractAPI.DataAccess\SaleContractAPI.DataAccess.csproj" />
     <ProjectReference Include="..\SaleContractAPI.DataContract\SaleContractAPI.DataContract.csproj" />
   </ItemGroup>

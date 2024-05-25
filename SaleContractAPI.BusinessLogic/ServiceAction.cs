@@ -1,4 +1,5 @@
 ﻿using Azure.Core.Diagnostics;
+using OfficeOpenXml;
 using SaleContractAPI.DataAccess;
 using SaleContractAPI.DataContract;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SaleContractAPI.BusinessLogic
 {
-    public class ServiceAction
+    public partial class ServiceAction
     {
         #region " STATIC "
         private readonly string _connectionstring = string.Empty;
@@ -18,6 +19,7 @@ namespace SaleContractAPI.BusinessLogic
         private readonly string DBENV = string.Empty;
         public ServiceAction(string connectionstring, string DBENV)
         {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             this._connectionstring = connectionstring;
             this.DBENV = DBENV;
         }
