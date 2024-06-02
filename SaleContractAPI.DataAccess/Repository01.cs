@@ -47,6 +47,25 @@ namespace SaleContractAPI.DataAccess
             }
 
         }
+
+        public async ValueTask<DataTable> SP_GET_REPORT_CRM_BY_SERVICE()
+        {
+            SqlCommand cmd = new SqlCommand($"[{DBENV}].[dbo].[SP_GET_REPORT_CRM_BY_SERVICE]", this.sqlConnection);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Transaction = this.transaction;
+
+            using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(cmd))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dt.TableName = "SP_GET_REPORT_CRM_BY_SERVICE";
+                    return dt;
+                }
+                else
+                    return null;
+            }
+
+        }
         #endregion "PROCEDURE"
     }
 }

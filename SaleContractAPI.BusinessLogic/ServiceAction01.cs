@@ -64,6 +64,32 @@ namespace SaleContractAPI.BusinessLogic
             return excelfile;
 
         }
+        public async ValueTask<byte[]> SP_GET_REPORT_CRM_BY_SERVICE()
+        {
+            byte[] excelfile = null;
+
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                var result = await repository.SP_GET_REPORT_CRM_BY_SERVICE();
+                if (result != null)
+                {
+                    excelfile = await DataTableToExcel(result);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return excelfile;
+
+        }
         private async ValueTask<byte[]> DataTableToExcel(DataTable dataTable)
         {
             using (var package = new ExcelPackage())

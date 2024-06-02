@@ -391,5 +391,21 @@ namespace SaleContractAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("SP_GET_REPORT_CRM_BY_SERVICE")]
+        public async ValueTask<IActionResult> SP_GET_REPORT_CRM_BY_SERVICE()
+        {
+            try
+            {
+                var result = await this.service.SP_GET_REPORT_CRM_BY_SERVICE();
+                if (result is null)
+                    return NoContent();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
