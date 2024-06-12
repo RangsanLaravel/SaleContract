@@ -121,5 +121,49 @@ namespace SaleContractAPI.BusinessLogic
                 }
             }
         }
+
+        public async ValueTask TERMINATE_TBT_COMPANY_DETAIL(string ID)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+            try
+            {
+                await repository.TERMINATE_TBT_COMPANY_DETAIL(ID);
+                await repository.CommitTransection();
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+
+        }
+
+        public async ValueTask TERMINATE_TBT_COMPANY_DETAIL_JOB(string ID)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+            try
+            {
+                await repository.TERMINATE_TBT_COMPANY_DETAIL_JOB(ID);
+                await repository.CommitTransection();
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+
+        }
     }
 }

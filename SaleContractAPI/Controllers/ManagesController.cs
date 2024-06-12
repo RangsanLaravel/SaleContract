@@ -407,5 +407,34 @@ namespace SaleContractAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete("TERMINATE_TBT_COMPANY_DETAIL/{ID}")]
+        public async ValueTask<IActionResult> TERMINATE_TBT_COMPANY_DETAIL(string ID)
+        {
+            try
+            {
+                //var _userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                await this.service.TERMINATE_TBT_COMPANY_DETAIL(ID);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpDelete("TERMINATE_TBT_COMPANY_DETAIL_JOB/{ID}")]
+        public async ValueTask<IActionResult> TERMINATE_TBT_COMPANY_DETAIL_JOB(string ID)
+        {
+            try
+            {
+                //var _userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                await this.service.TERMINATE_TBT_COMPANY_DETAIL_JOB(ID);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
