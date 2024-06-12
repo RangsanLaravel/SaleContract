@@ -397,5 +397,38 @@
             });
         }
        
+        const terminatedata = (id) => {
+            $.ajax({
+                url: `@Url.Action("TERMINATE_TBT_COMPANY_DETAIL", "Home")/${id}`,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    ID:id
+                },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: "Delete!",
+                            icon: "success",
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.getElementById("frmsearch").submit();
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: response.error
+                        });
+                    }
+
+                },
+                error: function () {
+
+                }
+            });
+        }
+       
     </script>
 }

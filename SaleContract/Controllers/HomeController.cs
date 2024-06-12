@@ -439,5 +439,21 @@ namespace SaleContract.Controllers
 
             // return RedirectToAction(nameof(Index));
         }
+        [HttpPost]
+        public IActionResult TERMINATE_TBT_COMPANY_DETAIL(SEARCH_COMPANY companyid)
+        {
+            RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
+            RestRequest request = new RestRequest($"/api/v1/Manages/TERMINATE_TBT_COMPANY_DETAIL/{companyid.ID}", Method.Delete);
+            request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
+            var response = client.Execute(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, error = response.Content });
+            }
+        }
     }
 }

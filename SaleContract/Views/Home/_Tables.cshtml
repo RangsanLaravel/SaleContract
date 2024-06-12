@@ -24,7 +24,7 @@
                 <th scope="col">Last Updated</th>
                 @if (ViewData["position"] as string == "CK")
                 {
-                    <th scope="col">Add New line</th>
+                    <th scope="col">#</th>
                 }
             </tr>
         </thead>
@@ -73,7 +73,12 @@
                         @if (ViewData["position"] as string == "CK")
                         {
                             <td>
-                                <a href="#" onclick="duplicatedata('@Model[i].ID')">เพิ่มรายการนี้</a>
+                                <a href="#" onclick="duplicatedata('@Model[i].ID')">
+                                    <i class="bi bi-plus-square-fill text-success"></i>
+                                </a>
+                                <a href="#" onclick="terminatedata('@Model[i].ID')">
+                                    <i class="bi bi-dash-square-fill text-danger"></i>
+                                </a>
                             </td>
                         }
                     </tr>

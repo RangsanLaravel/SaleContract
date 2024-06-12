@@ -72,7 +72,7 @@ namespace SaleContractAPI.DataAccess
         public async ValueTask TERMINATE_TBT_COMPANY_DETAIL(string id)
         {
             SqlCommand cmd = new SqlCommand($"UPDATE [{DBENV}].[dbo].[tbt_company_detail] SET tmn_dt =GETDATE(),tmn_flg='Y' WHERE ID =@ID", this.sqlConnection);
-            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandType = CommandType.Text;
             cmd.Transaction = this.transaction;
             cmd.Parameters.Add(new SqlParameter("ID", id));
             await  cmd.ExecuteNonQueryAsync();
@@ -80,7 +80,7 @@ namespace SaleContractAPI.DataAccess
         public async ValueTask TERMINATE_TBT_COMPANY_DETAIL_JOB(string id)
         {
             SqlCommand cmd = new SqlCommand($"UPDATE [{DBENV}].[dbo].[tbt_company_detail_JOB] SET tmn_dt =GETDATE(),tmn_flg='Y' WHERE ID =@ID", this.sqlConnection);
-            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandType = CommandType.Text;
             cmd.Transaction = this.transaction;
             cmd.Parameters.Add(new SqlParameter("ID", id));
             await cmd.ExecuteNonQueryAsync();
