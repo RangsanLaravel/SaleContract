@@ -72,8 +72,13 @@
                         <td ondblclick="showedit('@i')">@Model[i].LastUpdate</td>
                         @if (ViewData["position"] as string == "CK")
                         {
-                            <td>
-                                <a href="#" onclick="duplicatedata('@Model[i].ID')">เพิ่มรายการนี้</a>
+                             <td>
+                                <a href="#" onclick="duplicatedata('@Model[i].ID')">
+                                    <i class="bi bi-plus-square-fill text-success"></i>
+                                </a>
+                                <a href="#" onclick="terminatedata('@Model[i].ID','@Model[i].NAME')">
+                                    <i class="bi bi-dash-square-fill text-danger"></i>
+                                </a>
                             </td>
                         }
                     </tr>
