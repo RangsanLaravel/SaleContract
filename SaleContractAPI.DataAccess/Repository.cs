@@ -1358,13 +1358,14 @@ WHERE ID =@ID "
             cmd.Parameters.AddWithValue("@USERID", USERID);
             await cmd.ExecuteNonQueryAsync();
         }
-        public async  ValueTask<List<company_detail>> SP_GET_COMPANY_WON(DateTime? dateTimest,DateTime? dateTimeen)
+        public async  ValueTask<List<company_detail>> SP_GET_COMPANY_WON(DateTime? dateTimest,DateTime? dateTimeen,string userid)
         {
             SqlCommand cmd = new SqlCommand($"[{DBENV}].[dbo].[sp_get_company_won]", this.sqlConnection);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Transaction = this.transaction;
             cmd.Parameters.AddWithValue("@statusdtst", dateTimest ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@statusdten", dateTimeen?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@id", string.IsNullOrWhiteSpace( userid)? (object)DBNull.Value: userid);
             using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(cmd))
             {
                 if (dt.Rows.Count > 0)

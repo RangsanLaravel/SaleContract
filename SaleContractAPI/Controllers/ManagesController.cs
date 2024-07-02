@@ -351,7 +351,13 @@ namespace SaleContractAPI.Controllers
         {
             try
             {
-                var result=  await this.service.SP_GET_COMPANY_WON(condition.dateTimest, condition.dateTimeen);
+                var _userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                var _position = User.Claims.Where(a => a.Type == ClaimTypes.Role).Select(a => a.Value).FirstOrDefault();
+                if (_position == "CK")
+                {
+                    _userid = string.Empty;
+                }
+                var result=  await this.service.SP_GET_COMPANY_WON(condition.dateTimest, condition.dateTimeen, _userid);
                 if (result is null)
                     return NoContent();
                 return Ok(result);

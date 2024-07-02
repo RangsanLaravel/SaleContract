@@ -773,7 +773,7 @@ namespace SaleContractAPI.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
         }
-        public async ValueTask<List<company_detail>> SP_GET_COMPANY_WON(string dateTimest, string dateTimeen)
+        public async ValueTask<List<company_detail>> SP_GET_COMPANY_WON(string dateTimest, string dateTimeen,string userid)
         {
             List<company_detail> dataObjects = null;
             Repository repository = new Repository(_connectionstring, DBENV);
@@ -792,7 +792,7 @@ namespace SaleContractAPI.BusinessLogic
                     dten = DateTime.ParseExact(dateTimeen, "dd/MM/yyyy",
                                        System.Globalization.CultureInfo.InvariantCulture);
                 }
-                dataObjects = await repository.SP_GET_COMPANY_WON(dtst, dten);
+                dataObjects = await repository.SP_GET_COMPANY_WON(dtst, dten, userid);
                 if (dataObjects is null)
                     return dataObjects;
                 foreach (var item in dataObjects)
