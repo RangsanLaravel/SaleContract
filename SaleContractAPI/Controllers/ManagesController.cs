@@ -366,7 +366,14 @@ namespace SaleContractAPI.Controllers
         {
             try
             {
-                var result = await this.service.SP_GET_REPORT_CRM_BY_SALE();
+                var _userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                var _position = User.Claims.Where(a => a.Type == ClaimTypes.Role).Select(a => a.Value).FirstOrDefault();
+                if (_position == "CK")
+                {
+                    _userid = string.Empty;
+                }
+                
+                var result = await this.service.SP_GET_REPORT_CRM_BY_SALE(_userid);
                 if (result is null)
                     return NoContent();
                 return Ok(result);
@@ -381,7 +388,13 @@ namespace SaleContractAPI.Controllers
         {
             try
             {
-                var result = await this.service.SP_GET_REPORT_CRM_BY_STATUS_SALE();
+                var _userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                var _position = User.Claims.Where(a => a.Type == ClaimTypes.Role).Select(a => a.Value).FirstOrDefault();
+                if (_position == "CK")
+                {
+                    _userid = string.Empty;
+                }
+                var result = await this.service.SP_GET_REPORT_CRM_BY_STATUS_SALE(_userid);
                 if (result is null)
                     return NoContent();
                 return Ok(result);
@@ -397,7 +410,13 @@ namespace SaleContractAPI.Controllers
         {
             try
             {
-                var result = await this.service.SP_GET_REPORT_CRM_BY_SERVICE();
+                var _userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                var _position = User.Claims.Where(a => a.Type == ClaimTypes.Role).Select(a => a.Value).FirstOrDefault();
+                if (_position == "CK")
+                {
+                    _userid = string.Empty;
+                }
+                var result = await this.service.SP_GET_REPORT_CRM_BY_SERVICE(_userid);
                 if (result is null)
                     return NoContent();
                 return Ok(result);

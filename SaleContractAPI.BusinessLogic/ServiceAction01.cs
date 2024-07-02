@@ -14,14 +14,14 @@ namespace SaleContractAPI.BusinessLogic
     public partial class ServiceAction
     {
 
-        public async ValueTask<byte[]> SP_GET_REPORT_CRM_BY_SALE()
+        public async ValueTask<byte[]> SP_GET_REPORT_CRM_BY_SALE(string userid)
         {
             byte[] excelfile =null;
             Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
-                var result =  await  repository.SP_GET_REPORT_CRM_BY_SALE();
+                var result =  await  repository.SP_GET_REPORT_CRM_BY_SALE(userid);
                 if(result != null)
                 {
                     excelfile = await DataTableToExcel(result);
@@ -38,7 +38,7 @@ namespace SaleContractAPI.BusinessLogic
             }
             return excelfile;
         }
-        public async ValueTask<byte[]> SP_GET_REPORT_CRM_BY_STATUS_SALE()
+        public async ValueTask<byte[]> SP_GET_REPORT_CRM_BY_STATUS_SALE(string userid)
         {
             byte[] excelfile = null;
 
@@ -46,7 +46,7 @@ namespace SaleContractAPI.BusinessLogic
             await repository.OpenConnectionAsync();
             try
             {
-                var result =  await  repository.SP_GET_REPORT_CRM_BY_STATUS_SALE();
+                var result =  await  repository.SP_GET_REPORT_CRM_BY_STATUS_SALE(userid);
                 if (result != null)
                 {
                     excelfile = await DataTableToExcel(result);
@@ -64,7 +64,7 @@ namespace SaleContractAPI.BusinessLogic
             return excelfile;
 
         }
-        public async ValueTask<byte[]> SP_GET_REPORT_CRM_BY_SERVICE()
+        public async ValueTask<byte[]> SP_GET_REPORT_CRM_BY_SERVICE(string userid)
         {
             byte[] excelfile = null;
 
@@ -72,7 +72,7 @@ namespace SaleContractAPI.BusinessLogic
             await repository.OpenConnectionAsync();
             try
             {
-                var result = await repository.SP_GET_REPORT_CRM_BY_SERVICE();
+                var result = await repository.SP_GET_REPORT_CRM_BY_SERVICE(userid);
                 if (result != null)
                 {
                     excelfile = await DataTableToExcel(result);
