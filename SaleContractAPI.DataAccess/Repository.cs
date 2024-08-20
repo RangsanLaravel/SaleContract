@@ -799,7 +799,7 @@ ORDER BY ID DESC"
 
             sql.Parameters.AddWithValue("@company_id", condition.company_id );
             sql.Parameters.AddWithValue("@status_code", condition.status_code ??(object)DBNull.Value );
-            sql.Parameters.AddWithValue("@fsystem_id", condition.fsystem_id );
+            sql.Parameters.AddWithValue("@fsystem_id", condition.fsystem_id ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@remark", condition.remark ?? (object)DBNull.Value);
 
 
