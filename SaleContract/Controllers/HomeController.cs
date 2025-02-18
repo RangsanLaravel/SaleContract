@@ -418,13 +418,14 @@ namespace SaleContract.Controllers
 
             // return RedirectToAction(nameof(Index));
         }
-        [HttpGet]
-        public IActionResult SP_GET_REPORT_CRM_BY_STATUS_SALE()
+        [HttpPost]
+        public IActionResult SP_GET_REPORT_CRM_BY_STATUS_SALE(SEARCH_COMPANY condition)
         {
 
             RestClient client = new RestClient(_configuration["API:SALECONTRACTAPI"]);
             RestRequest request = new RestRequest($"/api/v1/Manages/SP_GET_REPORT_CRM_BY_STATUS_SALE", Method.Post);
             request.AddHeader("Authorization", "Bearer " + HttpContext.Session.GetString("token"));
+            request.AddBody(condition);
             var response = client.Execute<string>(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {

@@ -38,7 +38,7 @@ namespace SaleContractAPI.BusinessLogic
             }
             return excelfile;
         }
-        public async ValueTask<byte[]> SP_GET_REPORT_CRM_BY_STATUS_SALE(string userid)
+        public async ValueTask<byte[]> SP_GET_REPORT_CRM_BY_STATUS_SALE(string userid,SEARCH_COMPANY condition)
         {
             byte[] excelfile = null;
 
@@ -46,7 +46,7 @@ namespace SaleContractAPI.BusinessLogic
             await repository.OpenConnectionAsync();
             try
             {
-                var result =  await  repository.SP_GET_REPORT_CRM_BY_STATUS_SALE(userid);
+                var result =  await  repository.SP_GET_REPORT_CRM_BY_STATUS_SALE(userid,condition);
                 if (result != null)
                 {
                     excelfile = await DataTableToExcel(result);

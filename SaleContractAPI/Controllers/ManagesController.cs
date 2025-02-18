@@ -390,7 +390,7 @@ namespace SaleContractAPI.Controllers
             }
         }
         [HttpPost("SP_GET_REPORT_CRM_BY_STATUS_SALE")]
-        public async ValueTask<IActionResult> SP_GET_REPORT_CRM_BY_STATUS_SALE()
+        public async ValueTask<IActionResult> SP_GET_REPORT_CRM_BY_STATUS_SALE(SEARCH_COMPANY condition)
         {
             try
             {
