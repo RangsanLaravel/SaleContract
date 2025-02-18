@@ -97,13 +97,20 @@ namespace SaleContract.Controllers
             }
         }
 
-        public IActionResult Link(string token)
+        public IActionResult Link(string token,string iscreate)
         {
             GET_USERINFO(token);
             // GET_OWNERID();
             //GET_TBM_SUBSTATUS();
             HttpContext.Session.SetString("token", token);
-            return RedirectToAction("Index", "Home", null);
+            if (!string.IsNullOrWhiteSpace(iscreate)&& iscreate=="true")
+            {
+                return RedirectToAction("Create", "Home", null);
+            }
+            else 
+            {
+                return RedirectToAction("Index", "Home", null);
+            }
         }
 
         protected void GET_USERINFO(string token)
