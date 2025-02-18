@@ -18,5 +18,7 @@ namespace SaleContractAPI.DataContract
         public string EMAIL { get; set; }
         public string DealDateFollowup { get; set; }
         public string limit { get; set; }
+        public string lastupdate { get; set; }
+        public string ownername { get; set; }
     }
 }

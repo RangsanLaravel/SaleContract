@@ -47,7 +47,8 @@ namespace SaleContractAPI.DataAccess
             cmd.Parameters.AddWithValue("@name", condition?.NAME?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@modeltype", condition?.ModelType ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@contract", condition?.Contract ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@lastupdate", condition?.Contract ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@lastupdate", condition?.lastupdate ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@ownername", condition?.ownername ?? (object)DBNull.Value);
 
             using (DataTable dt = await ITUtility.Utility.FillDataTableAsync(cmd))
             {

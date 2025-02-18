@@ -11,6 +11,7 @@ using DataAccessUtility;
 using System.Linq;
 using Microsoft.IdentityModel.Tokens;
 using System.Runtime.InteropServices.ComTypes;
+using System.Globalization;
 
 namespace SaleContractAPI.DataAccess
 {
@@ -369,6 +370,15 @@ ORDER BY tbtst.FSYSTEM_DT ASC"
   AND (@DealDateFollowup IS NULL OR DealDateFollowup=@DealDateFollowup)
   AND (@Contract IS NULL OR Contract =@Contract)
   AND (@ModelType IS NULL OR ModelType =@ModelType)
+  {(string.IsNullOrWhiteSpace(condition.lastupdate)?"":
+  DateTime.TryParseExact(condition.lastupdate, "dd/MM/yyyy",
+            CultureInfo.InvariantCulture, DateTimeStyles.None, out _)?
+  $@"AND LastUpdate >= CONVERT(DATETIME, '{condition.lastupdate}', 103) 
+  AND LastUpdate < DATEADD(DAY, 1, CONVERT(DATETIME, '{condition.lastupdate}', 103))":"")}
+  {(string.IsNullOrWhiteSpace( condition?.ownername)? "":$@"AND ( Owner 
+    in(
+    select distinct user_id  FROM [{DBENV}].[dbo].[tbm_employee] where (fullname like '%{condition.ownername}%' OR lastname like'%{condition.ownername}%' ) AND status =1
+    ))")}
   AND (Status !='WON' OR Status IS NULL)
 ORDER BY  LastUpdate Desc
    "

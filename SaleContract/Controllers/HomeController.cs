@@ -48,7 +48,9 @@ namespace SaleContract.Controllers
                     DealDateFollowup =string.Empty,
                     Contract = string.Empty,
                 Remark =  string.Empty,
-                ModelType =  string.Empty
+                ModelType =  string.Empty,
+                lastupdate =string.Empty,
+                ownername =string.Empty
             };
             }
             else
@@ -61,6 +63,8 @@ namespace SaleContract.Controllers
                 condition.Contract = condition.Contract ?? string.Empty;
                 condition.Remark = condition.Remark ?? string.Empty;
                 condition.ModelType = condition.ModelType ?? string.Empty;
+                condition.lastupdate = condition.lastupdate ?? string.Empty;
+                condition.ownername = condition.ownername ?? string.Empty;
                 condition.limit = condition.limit ?? "1000";
                 condition.ID = string.Empty;
                 condition.Owner = string.Empty;

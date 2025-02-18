@@ -400,7 +400,7 @@ namespace SaleContractAPI.Controllers
                 {
                     _userid = string.Empty;
                 }
-                var result = await this.service.SP_GET_REPORT_CRM_BY_STATUS_SALE(_userid);
+                var result = await this.service.SP_GET_REPORT_CRM_BY_STATUS_SALE(_userid,condition);
                 if (result is null)
                     return NoContent();
                 return Ok(result);
