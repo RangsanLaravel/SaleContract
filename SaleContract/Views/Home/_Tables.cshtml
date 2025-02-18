@@ -4,6 +4,7 @@
             <tr>
                 <th>#</th>
                 <th scope="col">Order</th>
+                <th scope="col">Last Updated</th>
                 <th scope="col">doc_no </th>
                 <th scope="col">Name</th>
                 <th scope="col">Website </th>
@@ -21,7 +22,6 @@
                 <th scope="col">Deal value </th>
                 <th scope="col">% Percen </th>
                 <th scope="col">Won</th>
-                <th scope="col">Last Updated</th>
                 @if (ViewData["position"] as string == "CK")
                 {
                     <th scope="col">#</th>
@@ -36,6 +36,7 @@
                     <tr>
                         <th><a href="#" onclick="showtimeline('@Model[i].ID','@Model[i].NAME')"><i class="bi bi-plus-square-fill" style="font-size:15px"></i></a></th>
                         <th ondblclick="showedit('@i')" scope="row">@(i + 1)</th>
+                        <td ondblclick="showedit('@i')">@Model[i].LastUpdate</td>
                         <td ondblclick="showedit('@i')">@Model[i].People </td>
                         <td ondblclick="showedit('@i')">@Model[i].NAME </td>
                         <td ondblclick="showedit('@i')">@Model[i].WEBSITE </td>
@@ -69,7 +70,6 @@
                             var won = (deal * percen) / 100;
                             <td ondblclick="showedit('@i')">@won</td>
                         }
-                        <td ondblclick="showedit('@i')">@Model[i].LastUpdate</td>
                         @if (ViewData["position"] as string == "CK")
                         {
                             <td>
