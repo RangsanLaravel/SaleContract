@@ -65,7 +65,9 @@ namespace SaleContract.Controllers
                 condition.ID = string.Empty;
                 condition.Owner = string.Empty;
                 condition.DealDateFollowup = string.Empty;
+                ViewBag.condition =condition;
             }
+            
             request.AddBody(condition);
             var response = client.Execute<List<company_detail>>(request);
             ViewBag.Fullname = HttpContext.Session.GetString("fullname");

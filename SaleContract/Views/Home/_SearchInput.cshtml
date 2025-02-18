@@ -10,7 +10,11 @@
                         var priority = ViewData["priority"] as List<SaleContractAPI.DataContract.Priority>;
                         for (int i = 0; i < priority.Count; i++)
                         {
-                            <option value="@priority[i].ID">@priority[i].Priority_description</option>
+                           <option value="@priority[i].ID" selected="@(ViewBag.condition != null 
+                                && !string.IsNullOrWhiteSpace(((SaleContractAPI.DataContract.SEARCH_COMPANY)ViewBag.condition).Priority)
+                                && ((SaleContractAPI.DataContract.SEARCH_COMPANY)ViewBag.condition).Priority == priority[i].ID ? "selected" : null)">
+                                @priority[i].Priority_description
+                           </option>                 
                         }
                     }
                 </select>
@@ -24,7 +28,12 @@
                         var substatus = ViewData["substatus"] as List<SaleContractAPI.DataContract.substatus>;
                         for (int i = 0; i < substatus.Count; i++)
                         {
-                            <option value="@substatus[i].STATUS_CODE">@substatus[i].STATUS_DESCRIPTION</option>
+                            <option value="@substatus[i].STATUS_CODE"
+                            selected="@(ViewBag.condition != null 
+                                && !string.IsNullOrWhiteSpace(((SaleContractAPI.DataContract.SEARCH_COMPANY)ViewBag.condition).Status)
+                                && ((SaleContractAPI.DataContract.SEARCH_COMPANY)ViewBag.condition).Status == substatus[i].STATUS_CODE ? "selected" : null)">
+                            @substatus[i].STATUS_DESCRIPTION
+                            </option>
                         }
                     }
                 </select>
@@ -33,21 +42,25 @@
         <div class="row">
             <div class="mb-3 col-6" >              
                     <label for="txtName" class="form-label">Name</label>
-                    <input type="text" name="NAME" class="form-control" id="txtName" placeholder="Name">   
+                    <input type="text" name="NAME" class="form-control" id="txtName" placeholder="Name"
+                        value="@(ViewBag.condition != null ? ((SaleContractAPI.DataContract.SEARCH_COMPANY)ViewBag.condition).NAME : "")">
             </div>
             <div class="mb-3 col-6">
                 <label for="txtContract" class="form-label">Contract</label>
-                <input type="text" name="Contract" class="form-control" id="txtContract" placeholder="Contract">
+                <input type="text" name="Contract" class="form-control" id="txtContract" placeholder="Contract"
+                value="@(ViewBag.condition != null ? ((SaleContractAPI.DataContract.SEARCH_COMPANY)ViewBag.condition).Contract : "")">
             </div>
         </div>
         <div class="row">
             <div class="mb-3 col-6">
                 <label for="txtModeltype" class="form-label">ModelType</label>
-                <input type="text" name="ModelType" class="form-control" id="txtModeltype" placeholder="ModelType">
+                <input type="text" name="ModelType" class="form-control" id="txtModeltype" placeholder="ModelType"
+                value="@(ViewBag.condition != null ? ((SaleContractAPI.DataContract.SEARCH_COMPANY)ViewBag.condition).ModelType : "")">
             </div>
             <div class="mb-3 col-6">
                 <label for="txtRemark" class="form-label">Remark</label>
-                <input type="text" name="Remark" class="form-control" id="txtRemark" placeholder="Remark">
+                <input type="text" name="Remark" class="form-control" id="txtRemark" placeholder="Remark"
+                value="@(ViewBag.condition != null ? ((SaleContractAPI.DataContract.SEARCH_COMPANY)ViewBag.condition).Remark : "")">
             </div>          
         </div>
         <div class="mb-3 d-flex justify-content-center">
